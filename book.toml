@@ -3,11 +3,7 @@ title = "Q in the Wild"
 authors = ["Claude Code"]
 description = "A kdb+/q developer's guide to integrating with the rest of the world — Python, Rust, R, REST, streaming, and beyond."
 language = "en"
-multilingual = false
 src = "src"
-
-[rust]
-edition = "2021"
 
 [build]
 build-dir = "book"
