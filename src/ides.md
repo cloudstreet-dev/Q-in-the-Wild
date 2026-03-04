@@ -218,3 +218,184 @@ Q's syntax is unusual enough that generic dark themes don't highlight it well. T
 ```
 
 This is more optional than the preceding advice, but staring at poorly highlighted Q code for eight hours is an unforced error.
+
+## Keybindings for Q Development
+
+The VS Code KX extension's most useful keybindings:
+
+| Action | macOS | Linux/Windows |
+|--------|-------|---------------|
+| Execute selected code | `Cmd+Return` | `Ctrl+Return` |
+| Execute current line | `Cmd+Return` (no selection) | `Ctrl+Return` |
+| Execute entire file | `Cmd+Shift+Return` | `Ctrl+Shift+Return` |
+| Connect to server | via KDB panel | via KDB panel |
+| Toggle Q terminal | `Cmd+J` | `Ctrl+J` |
+
+The execute-selection shortcut is the one you'll use constantly. The workflow is: write a function definition, select it, hit `Cmd+Return`, see it load into the connected q process. Adjust, re-select, repeat. Much faster than copy-pasting into a terminal REPL.
+
+For loading whole files, a useful VS Code task:
+
+```json
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Load Q file",
+      "type": "shell",
+      "command": "echo '\\\\l ${file}' | nc localhost 5001",
+      "group": "build",
+      "presentation": { "reveal": "silent" },
+      "keybinding": "ctrl+shift+l"
+    }
+  ]
+}
+```
+
+## Managing Multiple kdb+ Connections
+
+Real Q development involves multiple environments — at minimum a local dev process and a shared test environment. The KX extension handles this cleanly.
+
+In `settings.json`, define all your environments:
+
+```json
+{
+  "kdb.servers": [
+    {
+      "serverName": "local-dev",
+      "serverAlias": "dev",
+      "host": "localhost",
+      "port": 5001,
+      "auth": false
+    },
+    {
+      "serverName": "shared-test",
+      "serverAlias": "test",
+      "host": "test-kdb.internal",
+      "port": 5001,
+      "auth": true,
+      "username": "dev"
+    },
+    {
+      "serverName": "hdb-prod-readonly",
+      "serverAlias": "hdb",
+      "host": "hdb.internal",
+      "port": 5010,
+      "auth": true,
+      "username": "readonly"
+    }
+  ]
+}
+```
+
+The extension shows these in the KDB panel. Active connection is shown in the status bar. Switching connections is one click. **Never accidentally execute against prod** by always checking the status bar before running anything that writes.
+
+For the test and prod connections that require passwords, the extension prompts on connect rather than storing passwords in settings files, which means your `settings.json` can safely be in version control.
+
+## Code Snippets for Common Q Patterns
+
+VS Code snippets save significant typing for boilerplate-heavy Q patterns. Add these to your Q snippets file (`Cmd+Shift+P` → "Configure User Snippets" → "q"):
+
+```json
+{
+  "Q function with named args": {
+    "prefix": "fn",
+    "body": [
+      "${1:funcName}: {[${2:args}]",
+      "    ${0}",
+      "    }"
+    ],
+    "description": "Q function with named parameters"
+  },
+  "Q namespace block": {
+    "prefix": "ns",
+    "body": [
+      "\\\\d .${1:namespace}",
+      "",
+      "${0}",
+      "",
+      "\\\\d ."
+    ],
+    "description": "Q namespace block"
+  },
+  "Q select statement": {
+    "prefix": "sel",
+    "body": [
+      "select ${2:cols}",
+      "from ${1:table}",
+      "where ${0}"
+    ],
+    "description": "Q select"
+  },
+  "Q select by": {
+    "prefix": "selby",
+    "body": [
+      "select ${3:aggregates}",
+      "from ${1:table}",
+      "where ${2:conditions}",
+      "by ${0:groups}"
+    ],
+    "description": "Q select with by"
+  },
+  "Q protected eval": {
+    "prefix": "trp",
+    "body": [
+      "@[${1:func}; ${2:args}; {[e] ${0}}]"
+    ],
+    "description": "Protected evaluation"
+  },
+  "Q table definition": {
+    "prefix": "tbl",
+    "body": [
+      "${1:name}: ([]",
+      "    ${2:col1}: \\`${3:type}\\$();",
+      "    ${0}",
+      "    )"
+    ],
+    "description": "Q table schema"
+  },
+  "Q timer": {
+    "prefix": "timer",
+    "body": [
+      ".z.ts: {[]",
+      "    ${0}",
+      "    }",
+      "\\\\t ${1:1000}"
+    ],
+    "description": "Q timer setup"
+  }
+}
+```
+
+## The kdb+ REPL in VS Code Terminal
+
+The terminal REPL and the VS Code extension aren't mutually exclusive. A useful setup: split pane with the source file on the left and a terminal running q on the right. The extension sends code to the connected process; the terminal shows output and lets you run ad hoc queries.
+
+```bash
+# Start a q session in VS Code's integrated terminal
+# Terminal → New Terminal, then:
+q -p 5001
+
+# Now the extension can connect to this same process
+# Code you execute via Cmd+Return appears in the terminal output
+```
+
+The advantage: you can see exactly what's happening in the q process — error messages, timer output, debug prints — while editing in the left pane.
+
+## IDE Comparison Summary
+
+| Feature | VS Code + KX | qStudio | IntelliJ + plugin | Emacs/Vim |
+|---------|-------------|---------|-------------------|-----------|
+| Syntax highlighting | ✓ | ✓ | ✓ | ✓ |
+| Live connection | ✓ | ✓ | ✓ | ✓ |
+| Autocomplete (builtins) | ✓ | limited | ✓ | limited |
+| Autocomplete (connected) | ✓ | ✓ | partial | — |
+| Table result viewer | basic | ✓✓ | basic | — |
+| Linting (qls) | ✓ | — | — | — |
+| Charts | — | ✓ | — | — |
+| Schema browser | ✓ | ✓ | — | — |
+| Git integration | ✓✓ | — | ✓✓ | ✓ |
+| Actively maintained | ✓ | ✓ | partial | community |
+| Cost | free | free/paid | free/paid | free |
+
+The recommendation hasn't changed: **VS Code + KX extension** for development, **qStudio** for data exploration. But the right answer is whatever you'll actually use — a well-configured Emacs setup beats a poorly-configured VS Code setup every time.
