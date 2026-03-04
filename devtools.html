@@ -1,0 +1,629 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Developer Tooling: Linters, Formatters, and Making Q Less Lonely - Q in the Wild</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A kdb+/q developer&#x27;s guide to integrating with the rest of the world — Python, Rust, R, REST, streaming, and beyond.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-b88233a2.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-4f3ba797.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Q in the Wild</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="developer-tooling-linters-formatters-and-making-q-less-lonely"><a class="header" href="#developer-tooling-linters-formatters-and-making-q-less-lonely">Developer Tooling: Linters, Formatters, and Making Q Less Lonely</a></h1>
+<p>Q development has historically been a solitary activity. You write code in a text editor, paste it into a REPL, and find out what’s wrong when it errors. There’s no static type checker, the formatter options are limited, and “test suite” in many Q shops means “I ran it and it seemed fine.”</p>
+<p>This has improved. The improvement is modest compared to what Python, Rust, or JavaScript developers take for granted, but it’s real and worth using.</p>
+<h2 id="linting-qls-and-the-kx-language-server"><a class="header" href="#linting-qls-and-the-kx-language-server">Linting: qls and the KX Language Server</a></h2>
+<p>The <strong>KX Language Server</strong> (<code>qls</code>) is the most capable static analysis tool available for Q. It powers the VS Code extension’s diagnostics and can be run standalone for CI integration.</p>
+<p>What it checks:</p>
+<ul>
+<li>Undefined variables (within analyzable scope)</li>
+<li>Type errors it can infer statically</li>
+<li>Unused variable assignments</li>
+<li>Shadowed names</li>
+<li>Wrong number of arguments to known functions</li>
+<li>Some style issues</li>
+</ul>
+<h3 id="using-qls-in-vs-code"><a class="header" href="#using-qls-in-vs-code">Using qls in VS Code</a></h3>
+<p>The KX VS Code extension installs and runs <code>qls</code> automatically. Underlined code in the editor with a red/yellow squiggle is <code>qls</code> talking to you. Take it seriously.</p>
+<p>Common diagnostics:</p>
+<pre><code class="language-q">/ qls will flag this:
+myFunc: {[x; y]
+    result: x + z   / 'z' is not defined in this scope
+    result * y
+    }
+
+/ And this:
+unused: 42   / assigned but never used in the function
+
+/ And this (wrong arg count):
+count[1; 2]   / count takes 1 argument
+
+/ This is fine:
+f: {[x] x * 2}
+g: {[x] f x}
+</code></pre>
+<h3 id="qls-in-ci"><a class="header" href="#qls-in-ci">qls in CI</a></h3>
+<p>For automated code quality checks:</p>
+<pre><code class="language-bash"># Install (part of the KX VS Code extension bundle, also available standalone)
+npm install -g @kxsystems/kdb-lsp
+
+# Run on Q files
+qls --check src/**/*.q
+
+# With specific rules
+qls --check --rules=all src/
+
+# JSON output for programmatic processing
+qls --check --format=json src/*.q | jq '.diagnostics[] | select(.severity == "error")'
+</code></pre>
+<p>GitHub Actions integration:</p>
+<pre><code class="language-yaml"># .github/workflows/lint.yml
+name: Lint Q Code
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kdb-lsp
+        run: npm install -g @kxsystems/kdb-lsp
+
+      - name: Lint Q files
+        run: |
+          qls --check --format=json q/**/*.q &gt; lint_results.json || true
+          cat lint_results.json
+          # Fail if any errors
+          errors=$(cat lint_results.json | jq '[.diagnostics[] | select(.severity == "error")] | length')
+          if [ "$errors" -gt "0" ]; then
+            echo "Found $errors lint errors"
+            exit 1
+          fi
+</code></pre>
+<h2 id="formatting-the-state-of-q-formatting"><a class="header" href="#formatting-the-state-of-q-formatting">Formatting: The State of Q Formatting</a></h2>
+<p>Q has no official formatter equivalent to <code>gofmt</code>, <code>rustfmt</code>, or <code>black</code>. This is a gap in the tooling ecosystem.</p>
+<p>What exists:</p>
+<ul>
+<li><code>qformat</code> (community): A Python-based formatter for Q code. Not as opinionated as <code>black</code>, but handles basic whitespace and indentation.</li>
+<li>Manual conventions: Most Q shops define their own style guide and enforce it in code review.</li>
+</ul>
+<p>Install and use <code>qformat</code>:</p>
+<pre><code class="language-bash">pip install qformat
+
+# Format in place
+qformat --in-place mycode.q
+
+# Check without modifying (for CI)
+qformat --check mycode.q &amp;&amp; echo "Formatted" || echo "Needs formatting"
+</code></pre>
+<h3 id="q-style-conventions-the-practical-guide"><a class="header" href="#q-style-conventions-the-practical-guide">Q Style Conventions (The Practical Guide)</a></h3>
+<p>Since there’s no <code>gofmt</code> that enforces these for you, here are conventions worth adopting:</p>
+<pre><code class="language-q">/ ─── Naming ──────────────────────────────────────────────────────────────────
+
+/ Functions: camelCase
+computeVwap: {[trades] ...}
+
+/ Tables: lowercase
+trade: ([] time:`timestamp$(); sym:`symbol$(); price:`float$())
+
+/ Namespaces: lowercase with dot
+.myapp.config: `host`port!("localhost"; 5001)
+.myapp.init: {[] ...}
+
+/ Constants: UPPERCASE (informal convention)
+MAX_SIZE: 1000000
+
+/ ─── Function Style ──────────────────────────────────────────────────────────
+
+/ Named arguments for multi-arg functions (don't use x y z for non-trivial functions)
+computeOHLC: {[trades; sym; date; barMins]
+    select
+        open:  first price,
+        high:  max price,
+        low:   min price,
+        close: last price
+    from trades
+    where date=date, sym=sym
+    by time: barMins xbar time.minute
+    }
+
+/ Short lambda: x y z are fine for 1-3 arg lambdas with obvious semantics
+doubled: {x * 2}
+sumPair: {x + y}
+
+/ ─── Spacing ─────────────────────────────────────────────────────────────────
+
+/ Space around operators in expressions
+a: b + c * d     / good
+a:b+c*d          / bad (hard to read at speed)
+
+/ No space before colon in assignment (the q way)
+result: 42       / good
+result : 42      / bad
+
+/ Space after semicolon in multi-statement function
+f: {[x] a: x+1; b: a*2; b-1}  / acceptable for short functions
+
+/ Multi-line for complex functions
+f: {[x]
+    a: x + 1;
+    b: a * 2;
+    b - 1
+    }
+
+/ ─── Documentation ──────────────────────────────────────────────────────────
+
+/ Use line comments for non-obvious logic
+/ Use block comments for function documentation
+
+/ Block comment style for function docs:
+/ computeVwap: Compute volume-weighted average price
+/   trades: trade table with columns time, sym, price, size
+/   sym: symbol to compute VWAP for
+/   date: date to compute VWAP for
+/   returns: float (VWAP) or null if no trades
+computeVwap: {[trades; sym; date]
+    data: select from trades where date=date, sym=sym;
+    $[count data;
+        data[`size] wavg data[`price];
+        0n]
+    }
+</code></pre>
+<h2 id="testing-q-unit-and-homemade-test-frameworks"><a class="header" href="#testing-q-unit-and-homemade-test-frameworks">Testing: q-unit and Homemade Test Frameworks</a></h2>
+<p>Q doesn’t have a built-in test framework. The options are:</p>
+<p><strong><code>q-unit</code></strong>: A minimal test framework for Q. Similar in spirit to xUnit.</p>
+<p><strong><code>qspec</code></strong>: A BDD-style testing framework. Less used but cleaner for descriptive tests.</p>
+<p><strong>Roll your own</strong>: Many Q shops use a simple convention file that tests functions inline.</p>
+<h3 id="q-unit"><a class="header" href="#q-unit">q-unit</a></h3>
+<pre><code class="language-bash"># Download q-unit
+# https://github.com/CharlesSkelton/qunit
+# Place qunit.q in your q path
+</code></pre>
+<pre><code class="language-q">/ test_trade.q
+\l qunit.q
+
+/ Test: VWAP calculation
+test_vwap_basic: {
+    trades: ([] price: 100.0 101.0 99.0; size: 100 200 150);
+    expected: (100.0*100 + 101.0*200 + 99.0*150) % (100+200+150);
+    result: computeVwap trades;
+    .qunit.assertEqual[result; expected; "basic VWAP"]
+    }
+
+test_vwap_empty: {
+    trades: ([] price:`float$(); size:`long$());
+    result: computeVwap trades;
+    .qunit.assertNull[result; "empty input returns null"]
+    }
+
+test_vwap_single: {
+    trades: ([] price: enlist 100.0; size: enlist 100);
+    result: computeVwap trades;
+    .qunit.assertEqual[result; 100.0; "single trade VWAP"]
+    }
+
+/ Run tests
+.qunit.run[]
+</code></pre>
+<h3 id="simple-homemade-framework"><a class="header" href="#simple-homemade-framework">Simple Homemade Framework</a></h3>
+<p>If adding a dependency feels heavy, this pattern works fine for smaller codebases:</p>
+<pre><code class="language-q">/ test.q — minimal test runner
+
+.test.passed: 0;
+.test.failed: 0;
+
+/ assert: check a condition
+.test.assert: {[name; condition]
+    $[condition;
+        [.test.passed +: 1;
+         -1 "[PASS] ", name];
+        [.test.failed +: 1;
+         -1 "[FAIL] ", name]]
+    }
+
+/ assertEqual: check equality
+.test.assertEqual: {[name; actual; expected]
+    .test.assert[name; actual ~ expected]
+    }
+
+/ assertError: check that an expression throws
+.test.assertError: {[name; expr]
+    result: @[value; expr; {[e] 1b}];
+    .test.assert[name; result ~ 1b]
+    }
+
+/ run: execute test function, report results
+.test.run: {[testFns]
+    testFns@\: ();
+    -1 "\nResults: ", (string .test.passed), " passed, ",
+       (string .test.failed), " failed";
+    if[.test.failed &gt; 0; exit 1]   / non-zero exit for CI
+    }
+
+/ ─── Example tests ──────────────────────────────────────────────────────────
+
+testComputeVwap: {[]
+    .test.assertEqual[
+        "basic VWAP";
+        computeVwap ([] price:100.0 101.0; size:100 200);
+        (100.0*100 + 101.0*200) % 300
+    ];
+    .test.assertError[
+        "null sym throws";
+        {computeVwap ([] price:1.0; size:1); (0N; .z.d)}
+    ]
+    }
+
+testScalePrice: {[]
+    .test.assertEqual["scale by 2"; scalePrice[2.0; 100.0]; 200.0];
+    .test.assertEqual["scale by 0"; scalePrice[0.0; 100.0]; 0.0];
+    .test.assertEqual["negative scale"; scalePrice[-1.0; 100.0]; -100.0]
+    }
+
+.test.run `testComputeVwap`testScalePrice
+</code></pre>
+<p>Run from the command line:</p>
+<pre><code class="language-bash">q test.q -q   / -q for quiet mode (suppresses startup output)
+echo "Exit code: $?"  / 0 = all tests pass, 1 = failures
+</code></pre>
+<h3 id="ci-integration-for-tests"><a class="header" href="#ci-integration-for-tests">CI Integration for Tests</a></h3>
+<pre><code class="language-yaml"># .github/workflows/test.yml
+name: Test Q Code
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download kdb+
+        run: |
+          # The free on-demand license works for CI
+          # Set QLIC to point to your license file
+          wget -q https://files.kx.com/linuxx86.zip
+          unzip -q linuxx86.zip -d ~/q
+          echo "$HOME/q/l64" &gt;&gt; $GITHUB_PATH
+
+      - name: Run Q tests
+        env:
+          QLIC: ${{ secrets.KX_LICENSE_ENCODED }}
+        run: |
+          echo "$QLIC" | base64 -d &gt; ~/q/kc.lic
+          q tests/test.q -q
+</code></pre>
+<h2 id="version-control-practices"><a class="header" href="#version-control-practices">Version Control Practices</a></h2>
+<p>Q code in version control isn’t different from any other code, but a few Q-specific practices help:</p>
+<h3 id="gitignore-for-q-projects"><a class="header" href="#gitignore-for-q-projects"><code>.gitignore</code> for Q Projects</a></h3>
+<pre><code class="language-gitignore"># kdb+ generated files
+*.log
+*.idx
+*.d
+
+# Splayed table files (the data, not the schema)
+sym
+*.dat
+
+# Q session state
+.q
+.z_history
+
+# Build artifacts
+*.so
+*.dylib
+
+# License files (never commit these)
+*.lic
+kc.lic
+</code></pre>
+<h3 id="separating-schema-from-data"><a class="header" href="#separating-schema-from-data">Separating Schema from Data</a></h3>
+<p>Keep your table schemas in <code>.q</code> files under version control; keep the actual data files out:</p>
+<pre><code>project/
+├── q/
+│   ├── schema.q      # table definitions
+│   ├── functions.q   # business logic
+│   └── init.q        # startup script
+├── tests/
+│   └── test.q
+└── data/             # not in git
+    ├── hdb/
+    └── rdb/
+</code></pre>
+<pre><code class="language-q">/ schema.q — version controlled
+trade: ([]
+    time:  `timestamp$();
+    sym:   `symbol$();
+    price: `float$();
+    size:  `long$()
+    )
+
+quote: ([]
+    time:  `timestamp$();
+    sym:   `symbol$();
+    bid:   `float$();
+    ask:   `float$();
+    bsize: `long$();
+    asize: `long$()
+    )
+</code></pre>
+<h2 id="dependency-management"><a class="header" href="#dependency-management">Dependency Management</a></h2>
+<p>Q has no package manager. The ecosystem is small enough that this isn’t as painful as it sounds, but it’s something to manage intentionally.</p>
+<p>Common patterns:</p>
+<pre><code class="language-q">/ Explicit version tracking in a manifest
+/ versions.q
+\d .versions
+kdbplus: "4.1.0"
+kafkaq: "1.5.2"
+websockets: "0.3.1"
+\d .
+
+/ Load dependencies with version checks
+loadDep: {[name; minVersion]
+    // Load the library
+    @[system; "l ", string name; {[e] '"Failed to load ", string name, ": ", e}];
+    // Check version if accessible
+    $[minVersion &lt;= .versions[name];
+        -1 "Loaded ", string name, " v", string .versions[name];
+        '"Version ", string name, " ", string .versions[name],
+         " &lt; required ", string minVersion]
+    }
+</code></pre>
+<p>No lock files, no <code>requirements.txt</code>, no <code>Cargo.toml</code>. Manage versions explicitly and document them. It’s not ideal. It’s the reality.</p>
+<h2 id="profiling-q-code"><a class="header" href="#profiling-q-code">Profiling Q Code</a></h2>
+<p>For performance work, Q has a built-in profiler:</p>
+<pre><code class="language-q">/ Time a single expression
+\t select from trade where date=.z.d, sym=`AAPL
+/ Output: 12 (milliseconds)
+
+/ Time over N iterations
+\t:1000 count trade
+/ Output: 3 (total ms for 1000 runs)
+
+/ More detailed profiling with .Q.ts
+.Q.ts select from trade where date=.z.d
+/ Output: (time ms; space bytes)
+
+/ Memory usage
+.Q.w[]
+/ `used`heap`peak`wmax`mmap`mphy`syms`symw
+/ See current memory allocation
+</code></pre>
+<p>For deeper profiling — finding hotspots in complex Q code — the combination of <code>\t</code> on individual functions with binary search is often the fastest approach:</p>
+<pre><code class="language-q">/ Profile each step of a pipeline
+stages: (
+    "load";       {select from trade where date=.z.d};
+    "filter";     {select from trade where date=.z.d, sym=`AAPL};
+    "aggregate";  {select vwap:size wavg price by sym from trade where date=.z.d};
+    "join";       {aj[`sym`time; ...; ...]}
+    );
+
+/ Time each stage
+{-1 (x 0), ": ", string \t (x 1)[]} each stages
+</code></pre>
+<p>There’s no flame graph generator for Q. Yet.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="streaming.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="conclusion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="streaming.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="conclusion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

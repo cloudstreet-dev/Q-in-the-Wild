@@ -1,0 +1,580 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>R and Q: Statistical Power Meets Time-Series Performance - Q in the Wild</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A kdb+/q developer&#x27;s guide to integrating with the rest of the world — Python, Rust, R, REST, streaming, and beyond.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-b88233a2.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-4f3ba797.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Q in the Wild</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="r-and-q-statistical-power-meets-time-series-performance"><a class="header" href="#r-and-q-statistical-power-meets-time-series-performance">R and Q: Statistical Power Meets Time-Series Performance</a></h1>
+<p>The R-Q relationship is one of complementary strengths that coexist awkwardly. R is genuinely excellent at statistics, visualization, and the kind of exploratory analysis where you want twelve different regression models and a scatterplot matrix in thirty lines. Q is genuinely excellent at storing and querying large time-series datasets efficiently. Together, they cover a lot of ground. Separately, they each have a large blind spot.</p>
+<p>The practical question is: how do you get R talking to Q without it being painful?</p>
+<h2 id="the-options"><a class="header" href="#the-options">The Options</a></h2>
+<p><strong><code>rkdb</code></strong>: The most direct path. R package that connects to kdb+ via IPC. Wraps the C API. The one you want.</p>
+<p><strong><code>rqpython</code> / qPython bridge</strong>: Use Python as a middleman. Q → Python → R. Occasionally done in organizations that already have Python infrastructure. More moving parts than necessary if you just want R talking to Q.</p>
+<p><strong>Flat files / HDF5</strong>: Export from Q, import in R. Works. Terrible for anything real-time. Mentioned only to be dismissed.</p>
+<p>We’ll focus on <code>rkdb</code>. It’s the direct, performant option and the one that’s actually maintained.</p>
+<h2 id="rkdb-setup-and-connection"><a class="header" href="#rkdb-setup-and-connection">rkdb: Setup and Connection</a></h2>
+<pre><code class="language-r"># Install from CRAN (or GitHub for latest)
+install.packages("rkdb")
+# or
+devtools::install_github("KxSystems/rkdb")
+</code></pre>
+<p>Connecting to a kdb+ process:</p>
+<pre><code class="language-r">library(rkdb)
+
+# Open a connection
+h &lt;- open_connection("localhost", 5001)
+
+# Execute a q expression
+result &lt;- execute(h, "til 10")
+print(result)
+# [1] 0 1 2 3 4 5 6 7 8 9
+
+# Close when done
+close_connection(h)
+</code></pre>
+<p>Use a tryCatch block to ensure the connection is closed:</p>
+<pre><code class="language-r">library(rkdb)
+
+with_qconnection &lt;- function(host, port, expr) {
+  h &lt;- open_connection(host, port)
+  on.exit(close_connection(h))
+  expr(h)
+}
+
+# Usage
+result &lt;- with_qconnection("localhost", 5001, function(h) {
+  execute(h, "select from trade where date=2024.01.15")
+})
+</code></pre>
+<h2 id="type-mapping"><a class="header" href="#type-mapping">Type Mapping</a></h2>
+<p>Q types map to R types reasonably cleanly, with a few exceptions that matter:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Q type</th><th>R type</th></tr>
+</thead>
+<tbody>
+<tr><td>boolean</td><td>logical</td></tr>
+<tr><td>byte</td><td>raw</td></tr>
+<tr><td>short</td><td>integer</td></tr>
+<tr><td>int</td><td>integer</td></tr>
+<tr><td>long</td><td>numeric (R has no 64-bit int)</td></tr>
+<tr><td>real</td><td>numeric</td></tr>
+<tr><td>float</td><td>numeric</td></tr>
+<tr><td>char</td><td>character</td></tr>
+<tr><td>symbol</td><td>character</td></tr>
+<tr><td>timestamp</td><td>POSIXct</td></tr>
+<tr><td>date</td><td>Date</td></tr>
+<tr><td>time</td><td>difftime</td></tr>
+<tr><td>list</td><td>list</td></tr>
+<tr><td>table</td><td>data.frame</td></tr>
+<tr><td>dictionary</td><td>named list</td></tr>
+</tbody>
+</table>
+</div>
+<p>The important one: <strong>Q longs become R numerics</strong>. R’s integer type is 32-bit. Q’s long is 64-bit. Values up to 2^31 survive the conversion without issue; larger values lose precision silently. If you’re working with large integer IDs or nanosecond timestamps as integers, be aware of this.</p>
+<pre><code class="language-r">h &lt;- open_connection("localhost", 5001)
+
+# Q table → R data.frame (this is the good news)
+df &lt;- execute(h, "select date, sym, price, size from trade where date=2024.01.15")
+class(df)          # "data.frame"
+str(df)
+# 'data.frame':   1000 obs. of  4 variables:
+#  $ date : Date, format: "2024-01-15" ...
+#  $ sym  : chr  "AAPL" "AAPL" "MSFT" ...
+#  $ price: num  185.5 185.6 375.2 ...
+#  $ size : num  100 200 150 ...
+
+# Symbol columns come back as character vectors
+class(df$sym)      # "character"
+
+# Timestamp handling
+ts_data &lt;- execute(h, "select time from trade where date=2024.01.15, i&lt;5")
+class(ts_data$time)  # "POSIXct" "POSIXt"
+format(ts_data$time[1], "%H:%M:%OS6")  # "09:30:00.123456"
+
+close_connection(h)
+</code></pre>
+<h2 id="the-moment-doing-real-analysis"><a class="header" href="#the-moment-doing-real-analysis">The Moment: Doing Real Analysis</a></h2>
+<p>Here’s the pattern that makes the R-Q combination click — pull structured data from Q, do something R is uniquely good at, and optionally push results back.</p>
+<pre><code class="language-r">library(rkdb)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull a month of OHLC data from Q
+ohlc &lt;- execute(h, "
+  select
+    date,
+    open: first price,
+    high: max price,
+    low: min price,
+    close: last price,
+    volume: sum size
+  from trade
+  where
+    date within 2024.01.01 2024.01.31,
+    sym=`AAPL
+  by date
+")
+
+# That Q query runs in milliseconds on a properly splayed table.
+# Now R takes over.
+
+# Compute technical indicators in R
+ohlc &lt;- ohlc %&gt;%
+  arrange(date) %&gt;%
+  mutate(
+    # Simple moving averages
+    sma_5  = zoo::rollmean(close, 5,  fill = NA, align = "right"),
+    sma_20 = zoo::rollmean(close, 20, fill = NA, align = "right"),
+
+    # Daily return
+    ret = (close / lag(close)) - 1,
+
+    # Bollinger bands (20-day)
+    bb_mid  = sma_20,
+    bb_sd   = zoo::rollapply(close, 20, sd, fill = NA, align = "right"),
+    bb_upper = bb_mid + 2 * bb_sd,
+    bb_lower = bb_mid - 2 * bb_sd,
+
+    # RSI (14-day)
+    gain = pmax(ret, 0),
+    loss = pmax(-ret, 0),
+    avg_gain = zoo::rollmean(gain, 14, fill = NA, align = "right"),
+    avg_loss = zoo::rollmean(loss, 14, fill = NA, align = "right"),
+    rs = avg_gain / avg_loss,
+    rsi = 100 - (100 / (1 + rs))
+  )
+
+print(tail(ohlc %&gt;% select(date, close, sma_5, sma_20, rsi), 5))
+
+# Visualize
+ggplot(ohlc %&gt;% filter(!is.na(sma_20)), aes(x = date)) +
+  geom_ribbon(aes(ymin = bb_lower, ymax = bb_upper), fill = "steelblue", alpha = 0.2) +
+  geom_line(aes(y = close), color = "black") +
+  geom_line(aes(y = sma_20), color = "red", linetype = "dashed") +
+  labs(title = "AAPL: Price with Bollinger Bands (Jan 2024)",
+       y = "Price", x = NULL) +
+  theme_minimal()
+</code></pre>
+<h2 id="pushing-results-back-to-q"><a class="header" href="#pushing-results-back-to-q">Pushing Results Back to Q</a></h2>
+<p>Results computed in R can be inserted back into Q:</p>
+<pre><code class="language-r">library(rkdb)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Compute something in R
+set.seed(42)
+simulated_paths &lt;- data.frame(
+  t = 0:252,
+  path1 = cumsum(c(0, rnorm(252, 0.0003, 0.015))),
+  path2 = cumsum(c(0, rnorm(252, 0.0003, 0.015))),
+  path3 = cumsum(c(0, rnorm(252, 0.0003, 0.015)))
+)
+
+# Push back to Q
+# Note: execute() sends data; the second argument to `set` is the name
+execute(h, "set", "sim_paths", simulated_paths)
+
+# Verify
+n &lt;- execute(h, "count sim_paths")
+cat("Rows in Q:", n, "\n")  # 253
+</code></pre>
+<p>The type mapping on the way <em>in</em> can be fiddly. Data frames map to Q tables; R numerics map to Q floats; R integers map to Q ints. Factors will cause you grief — convert them to character first.</p>
+<h2 id="statistical-patterns-that-work-well"><a class="header" href="#statistical-patterns-that-work-well">Statistical Patterns That Work Well</a></h2>
+<h3 id="cross-sectional-factor-analysis"><a class="header" href="#cross-sectional-factor-analysis">Cross-Sectional Factor Analysis</a></h3>
+<pre><code class="language-r">library(rkdb)
+library(dplyr)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull end-of-day prices for a universe of symbols
+eod &lt;- execute(h, "
+  select
+    date,
+    sym,
+    close: last price,
+    volume: sum size
+  from trade
+  where
+    date within 2023.01.01 2024.01.01,
+    sym in `AAPL`MSFT`GOOG`AMZN`META`NVDA`TSLA`JPM`BAC`GS
+  by date, sym
+")
+
+# Compute factor exposures
+eod &lt;- eod %&gt;%
+  group_by(sym) %&gt;%
+  arrange(date) %&gt;%
+  mutate(
+    ret_1d   = close / lag(close) - 1,
+    ret_5d   = close / lag(close, 5) - 1,
+    ret_21d  = close / lag(close, 21) - 1,
+    vol_21d  = zoo::rollapply(ret_1d, 21, sd, fill = NA, align = "right"),
+    vol_log  = log(volume),
+    momentum = ret_21d / vol_21d  # risk-adjusted momentum
+  ) %&gt;%
+  ungroup()
+
+# Cross-sectional z-score each factor
+eod &lt;- eod %&gt;%
+  group_by(date) %&gt;%
+  mutate(
+    z_momentum = scale(momentum)[,1],
+    z_vol_log  = scale(vol_log)[,1]
+  ) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(z_momentum))
+
+# IC (Information Coefficient) of momentum factor
+ic_by_date &lt;- eod %&gt;%
+  group_by(date) %&gt;%
+  summarise(
+    ic = cor(z_momentum, lead(ret_5d), use = "complete.obs", method = "spearman"),
+    .groups = "drop"
+  ) %&gt;%
+  filter(!is.na(ic))
+
+cat("Mean IC:", round(mean(ic_by_date$ic, na.rm = TRUE), 4), "\n")
+cat("IC IR:", round(mean(ic_by_date$ic, na.rm = TRUE) /
+                    sd(ic_by_date$ic, na.rm = TRUE), 4), "\n")
+</code></pre>
+<h3 id="cointegration-analysis"><a class="header" href="#cointegration-analysis">Cointegration Analysis</a></h3>
+<p>Q’s tick data is excellent for cointegration testing — pairs trading, spread analysis, that sort of thing:</p>
+<pre><code class="language-r">library(rkdb)
+library(urca)  # for Johansen cointegration test
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull synchronized mid prices for two instruments
+prices &lt;- execute(h, "
+  aj[`time`sym;
+    select time, sym:`SPY, mid:0.5*(bid+ask) from quotes where date=2024.01.15, sym=`SPY;
+    select time, sym:`IVV, mid:0.5*(bid+ask) from quotes where date=2024.01.15, sym=`IVV
+  ]
+")
+
+spy &lt;- prices$mid[prices$sym == "SPY"]
+ivv &lt;- prices$mid[prices$sym == "IVV"]
+
+# Engle-Granger cointegration test
+coint_reg &lt;- lm(spy ~ ivv)
+cat("Cointegration regression R²:", summary(coint_reg)$r.squared, "\n")
+
+# ADF test on residuals
+adf_result &lt;- ur.df(residuals(coint_reg), type = "drift", lags = 5)
+cat("ADF test statistic:", adf_result@teststat[1], "\n")
+cat("5% critical value:", adf_result@cval[1, 2], "\n")
+
+# Spread (basis)
+spread &lt;- spy - coef(coint_reg)[2] * ivv - coef(coint_reg)[1]
+cat("Spread mean:", round(mean(spread), 6), "\n")
+cat("Spread SD:", round(sd(spread), 6), "\n")
+cat("Current z-score:", round(tail(spread, 1) / sd(spread), 4), "\n")
+</code></pre>
+<h2 id="parameterized-queries"><a class="header" href="#parameterized-queries">Parameterized Queries</a></h2>
+<p>String interpolation for Q queries is fragile. Use the list-form execute when you need parameters:</p>
+<pre><code class="language-r"># Fragile: SQL injection-ish problems, quoting issues
+sym &lt;- "AAPL"
+bad_query &lt;- paste0("select from trade where sym=`", sym)
+execute(h, bad_query)  # works but ugly
+
+# Better: use execute with arguments
+# rkdb supports passing arguments after the function call
+result &lt;- execute(h, "{[s;d] select from trade where sym=s, date=d}",
+                  as.name("AAPL"),        # Q symbol
+                  as.Date("2024-01-15"))  # Q date
+
+# The as.name() trick converts R character to Q symbol
+# as.Date() converts R Date to Q date
+</code></pre>
+<h2 id="scheduling-and-automation"><a class="header" href="#scheduling-and-automation">Scheduling and Automation</a></h2>
+<p>For regular R → Q data pulls (end-of-day analytics, overnight batch jobs):</p>
+<pre><code class="language-r">library(rkdb)
+
+run_eod_analytics &lt;- function(date_str) {
+  h &lt;- open_connection("localhost", 5001)
+  on.exit(close_connection(h))
+
+  tryCatch({
+    # Pull data
+    data &lt;- execute(h, paste0(
+      "select from eod_summary where date=", date_str
+    ))
+
+    if (nrow(data) == 0) {
+      cat("No data for", date_str, "\n")
+      return(invisible(NULL))
+    }
+
+    # Run analytics
+    results &lt;- compute_factor_scores(data)
+
+    # Write back
+    execute(h, "set", "r_factor_scores", results)
+    execute(h, paste0("r_factor_scores: update date:", date_str,
+                      " from r_factor_scores"))
+
+    # Append to persistent table
+    execute(h, "`factor_scores upsert r_factor_scores")
+
+    cat("EOD analytics complete for", date_str, "\n")
+  }, error = function(e) {
+    cat("Error in EOD analytics:", conditionMessage(e), "\n")
+  })
+}
+
+# Run for today
+run_eod_analytics(format(Sys.Date(), "%Y.%m.%d"))
+</code></pre>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<p>Q will outperform R on any query over large datasets. R’s <code>data.frame</code> operations get slow past a few million rows; Q’s columnar storage and query engine handle billions of rows comfortably. The right division of labor is:</p>
+<ul>
+<li><strong>Filter and aggregate in Q</strong> (date ranges, symbol selection, OHLC, VWAP)</li>
+<li><strong>Analyze in R</strong> (regressions, factor models, rolling stats, visualization)</li>
+<li><strong>Write results back to Q</strong> (persist computed signals for the trading system)</li>
+</ul>
+<p>Don’t pull raw tick data into R and filter it there. Pull the Q-computed aggregates. Your laptop will thank you.</p>
+<p>A query like this runs in milliseconds in Q; the equivalent in R against a data.frame with 100M rows does not:</p>
+<pre><code class="language-q">/ Q: ~10ms on 100M row trade table
+select vwap: size wavg price by sym from trade where date=2024.01.15
+</code></pre>
+<pre><code class="language-r"># R equivalent: slow
+# trade_df %&gt;% group_by(sym) %&gt;% summarise(vwap = weighted.mean(price, size))
+# Much better: let Q do it, just receive the result in R
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="rust.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ides.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="rust.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ides.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

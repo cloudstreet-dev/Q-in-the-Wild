@@ -1,0 +1,694 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Streaming Integrations: Kafka, WebSockets, and Real-Time Q - Q in the Wild</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A kdb+/q developer&#x27;s guide to integrating with the rest of the world — Python, Rust, R, REST, streaming, and beyond.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-b88233a2.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-4f3ba797.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Q in the Wild</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="streaming-integrations-kafka-websockets-and-real-time-q"><a class="header" href="#streaming-integrations-kafka-websockets-and-real-time-q">Streaming Integrations: Kafka, WebSockets, and Real-Time Q</a></h1>
+<p>kdb+/q was built for real-time data. The tick infrastructure — the tickerplant, real-time database, and historical database — is one of Q’s strongest features and the reason it dominates in high-frequency finance. What it wasn’t originally designed for is plugging into the broader streaming ecosystem: Kafka topics, WebSocket-hungry frontends, and the event-driven microservices architecture that everyone built in the 2020s.</p>
+<p>This chapter is about making Q a first-class participant in that ecosystem — both as a consumer of external streams and as a producer of real-time data.</p>
+<h2 id="qs-native-tick-architecture-brief-review"><a class="header" href="#qs-native-tick-architecture-brief-review">Q’s Native Tick Architecture (Brief Review)</a></h2>
+<p>Before plugging Q into Kafka, understand what Q already does natively:</p>
+<pre><code>Feed Handler → Tickerplant → RDB (real-time DB)
+                           → Subscribers (other q processes)
+                           → Log file → HDB (historical DB)
+</code></pre>
+<p>The tickerplant receives data, timestamps it, writes to a log, and publishes to subscribers via IPC. Each subscriber calls <code>.u.sub</code> to register and receives updates via <code>.u.upd</code>.</p>
+<p>This is already a streaming architecture — it’s just Q-native. When you need to integrate with non-Q systems, you extend this pattern rather than replacing it.</p>
+<h2 id="kafka-integration"><a class="header" href="#kafka-integration">Kafka Integration</a></h2>
+<h3 id="architecture"><a class="header" href="#architecture">Architecture</a></h3>
+<p>The two Kafka-Q integration patterns:</p>
+<p><strong>Q as consumer</strong>: A Q process subscribes to Kafka topics and ingests data into kdb+ tables. Useful for bringing external event streams into your time-series database.</p>
+<p><strong>Q as producer</strong>: A Q process (typically a tickerplant subscriber) publishes processed data to Kafka topics for consumption by other services.</p>
+<h3 id="kafkaq"><a class="header" href="#kafkaq">KafkaQ</a></h3>
+<p>The <code>KafkaQ</code> library (from KX) provides Kafka integration for q:</p>
+<pre><code class="language-bash"># Install KafkaQ (requires librdkafka)
+# macOS
+brew install librdkafka
+# Ubuntu/Debian
+apt-get install librdkafka-dev
+
+# Download KafkaQ
+# https://github.com/KxSystems/kafka
+# Place kafkaq.so/.dylib in your q path
+</code></pre>
+<pre><code class="language-q">/ Load KafkaQ
+\l kafkaq.q
+
+/ ─── Consumer ───────────────────────────────────────────────────────────────
+
+/ Create a consumer with configuration
+consumer: .kafka.newConsumer[
+    `bootstrap.servers`group.id`auto.offset.reset!
+    ("localhost:9092"; "my-q-consumer"; "earliest")
+]
+
+/ Subscribe to topics
+.kafka.subscribe[consumer; `trade_data`order_data]
+
+/ Message handler — called for each incoming Kafka message
+.kafka.recvMsg: {[consumer; msg]
+    / msg is a dictionary: `topic`partition`offset`key`data`timestamp
+    topic: msg`topic;
+    payload: .j.k msg`data;   / deserialize JSON payload
+
+    / Route to appropriate handler
+    $[topic ~ "trade_data";   ingestTrade payload;
+      topic ~ "order_data";   ingestOrder payload;
+      / default
+      -1 "Unknown topic: ", string topic]
+    }
+
+/ Start polling (call in a timer or loop)
+.kafka.poll[consumer; 1000]   / poll with 1000ms timeout
+
+/ ─── Trade ingestion ─────────────────────────────────────────────────────────
+
+/ In-memory trade table (replace with actual schema)
+trade: ([] time:`timestamp$(); sym:`symbol$(); price:`float$(); size:`long$())
+
+ingestTrade: {[payload]
+    / Convert Kafka message to Q row
+    row: (
+        `timestamp$payload`timestamp;
+        `$payload`sym;
+        `float$payload`price;
+        `long$payload`size
+    );
+    `trade insert row;
+
+    / Optional: forward to tickerplant
+    if[0 &lt; count tp_handle; neg[tp_handle] (`.u.upd; `trade; row)]
+    }
+</code></pre>
+<h3 id="q-as-kafka-producer"><a class="header" href="#q-as-kafka-producer">Q as Kafka Producer</a></h3>
+<p>Publishing Q data to Kafka:</p>
+<pre><code class="language-q">\l kafkaq.q
+
+/ Create a producer
+producer: .kafka.newProducer[
+    `bootstrap.servers`acks!
+    ("localhost:9092"; "all")
+]
+
+/ Publish tickerplant updates to Kafka
+/ Add this to your RDB subscriber
+
+.u.upd: {[t; data]
+    / Standard RDB upsert
+    t insert data;
+
+    / Also publish to Kafka
+    publishToKafka[t; data]
+    }
+
+publishToKafka: {[table; data]
+    topic: "kdb-", string table;
+
+    / Convert each row to JSON and publish
+    rows: flip data;
+    do[count rows 0;
+        row: rows[; i];
+        msg: .j.j `table`data!(table; row);
+        .kafka.publish[producer; `$topic; ""; msg]
+    ]
+    }
+</code></pre>
+<h3 id="python-kafka-bridge"><a class="header" href="#python-kafka-bridge">Python Kafka Bridge</a></h3>
+<p>If installing KafkaQ feels like more than you want to manage, a Python bridge is a clean alternative:</p>
+<pre><code class="language-python"># kafka_bridge.py
+# Consumes from Kafka, inserts into kdb+ via IPC
+
+from kafka import KafkaConsumer
+import pykx as kx
+import json
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+def run_bridge(
+    kafka_brokers: str,
+    kafka_topic: str,
+    kdb_host: str,
+    kdb_port: int,
+    kdb_table: str
+):
+    consumer = KafkaConsumer(
+        kafka_topic,
+        bootstrap_servers=kafka_brokers,
+        value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+        auto_offset_reset='latest',
+        group_id='kdb-bridge'
+    )
+
+    q = kx.SyncQConnection(host=kdb_host, port=kdb_port)
+    logger.info(f"Bridge running: {kafka_topic} → kdb+:{kdb_port}:{kdb_table}")
+
+    batch = []
+    batch_size = 100
+
+    try:
+        for message in consumer:
+            payload = message.value
+            batch.append(payload)
+
+            if len(batch) &gt;= batch_size:
+                flush_batch(q, kdb_table, batch)
+                batch = []
+
+    except KeyboardInterrupt:
+        if batch:
+            flush_batch(q, kdb_table, batch)
+    finally:
+        consumer.close()
+        q.close()
+
+def flush_batch(q: kx.SyncQConnection, table: str, batch: list):
+    """Insert a batch of records into kdb+."""
+    import pandas as pd
+
+    df = pd.DataFrame(batch)
+
+    # Type coercions
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+    if 'sym' in df.columns:
+        df['sym'] = df['sym'].astype(str)
+
+    q(f'`{table} insert', df)
+    logger.info(f"Flushed {len(batch)} records to {table}")
+
+if __name__ == '__main__':
+    run_bridge(
+        kafka_brokers='localhost:9092',
+        kafka_topic='market-trades',
+        kdb_host='localhost',
+        kdb_port=5001,
+        kdb_table='trade'
+    )
+</code></pre>
+<h2 id="websockets-streaming-q-data-to-browsers"><a class="header" href="#websockets-streaming-q-data-to-browsers">WebSockets: Streaming Q Data to Browsers</a></h2>
+<p>The use case: a dashboard that shows live market data, updated as trades arrive in kdb+. WebSockets are the right transport for this — persistent connection, low overhead, bidirectional.</p>
+<h3 id="qs-built-in-websocket-server"><a class="header" href="#qs-built-in-websocket-server">Q’s Built-In WebSocket Server</a></h3>
+<p>kdb+ 3.5+ has native WebSocket support via <code>.z.wo</code>, <code>.z.wc</code>, <code>.z.ws</code>:</p>
+<pre><code class="language-q">\p 5001   / start on port 5001 (same port handles HTTP, IPC, and WebSockets)
+
+/ WebSocket connection tracking
+ws_clients: `long$()   / list of connected WebSocket handles
+
+.z.wo: {[h]
+    / h = new WebSocket handle
+    ws_clients,: h;
+    -1 "WS connected: ", string h;
+    }
+
+.z.wc: {[h]
+    / h = closing WebSocket handle
+    ws_clients: ws_clients except h;
+    -1 "WS disconnected: ", string h;
+    }
+
+.z.ws: {[x]
+    / x = incoming WebSocket message (string or bytes)
+    / Parse request and send back data
+    request: .j.k x;
+
+    response: handleWsRequest request;
+    neg[.z.w] .j.j response
+    }
+
+handleWsRequest: {[req]
+    action: req`action;
+    $[action ~ "subscribe";
+        handleSubscribe req;
+      action ~ "query";
+        handleQuery req;
+      `error`message!("unknown_action"; action)]
+    }
+
+handleSubscribe: {[req]
+    syms: `$req`syms;
+    / Store subscription: handle -&gt; syms
+    `subscriptions upsert (.z.w; syms);
+    `status`message!("subscribed"; "Subscribed to ", " " sv string syms)
+    }
+
+handleQuery: {[req]
+    q_code: req`query;
+    result: @[value; q_code; {[e] `error`message!(1b; string e)}];
+    `status`data!("ok"; result)
+    }
+
+/ Broadcast trade updates to subscribed WebSocket clients
+subscriptions: ([handle:`long$()] syms:())
+
+broadcastTrade: {[trade_data]
+    / For each connected WS client with matching subscription
+    {[h; trade_data]
+        client_syms: subscriptions[h; `syms];
+        matching: trade_data where trade_data[`sym] in client_syms;
+        if[count matching;
+            neg[h] .j.j `type`data!("trade_update"; matching)]
+    }[; trade_data] each ws_clients;
+    }
+
+/ Hook into tickerplant update function
+.u.upd: {[t; data]
+    $[t ~ `trade;
+        broadcastTrade data;
+        ()];
+    }
+</code></pre>
+<h3 id="javascript-client"><a class="header" href="#javascript-client">JavaScript Client</a></h3>
+<pre><code class="language-javascript">// dashboard.js
+const ws = new WebSocket('ws://localhost:5001');
+
+ws.onopen = () =&gt; {
+    console.log('Connected to kdb+');
+
+    // Subscribe to specific symbols
+    ws.send(JSON.stringify({
+        action: 'subscribe',
+        syms: ['AAPL', 'MSFT', 'GOOG']
+    }));
+};
+
+ws.onmessage = (event) =&gt; {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === 'trade_update') {
+        updateDashboard(msg.data);
+    }
+};
+
+ws.onerror = (error) =&gt; console.error('WebSocket error:', error);
+ws.onclose = () =&gt; {
+    console.log('Disconnected');
+    setTimeout(() =&gt; reconnect(), 5000);  // auto-reconnect
+};
+
+function updateDashboard(trades) {
+    trades.forEach(trade =&gt; {
+        const el = document.getElementById(`price-${trade.sym}`);
+        if (el) {
+            el.textContent = trade.price.toFixed(2);
+            el.classList.add('flash');
+            setTimeout(() =&gt; el.classList.remove('flash'), 300);
+        }
+    });
+}
+
+// Request historical data via query
+function fetchOHLC(sym, date) {
+    ws.send(JSON.stringify({
+        action: 'query',
+        query: `select from ohlc where sym=\`${sym}, date=${date}`
+    }));
+}
+</code></pre>
+<h3 id="fastapi-websocket-proxy"><a class="header" href="#fastapi-websocket-proxy">FastAPI WebSocket Proxy</a></h3>
+<p>For production, a FastAPI proxy handles authentication, connection management, and adds observability:</p>
+<pre><code class="language-python"># websocket_proxy.py
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.websockets import WebSocketState
+import pykx as kx
+import asyncio
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+app = FastAPI()
+
+# kdb+ connection for WebSocket data
+q = kx.SyncQConnection(host='localhost', port=5001)
+
+class ConnectionManager:
+    def __init__(self):
+        self.active: dict[str, list[WebSocket]] = {}  # sym -&gt; [websocket]
+
+    async def connect(self, websocket: WebSocket, sym: str):
+        await websocket.accept()
+        if sym not in self.active:
+            self.active[sym] = []
+        self.active[sym].append(websocket)
+        logger.info(f"WS connected for {sym}, total: {sum(len(v) for v in self.active.values())}")
+
+    def disconnect(self, websocket: WebSocket, sym: str):
+        if sym in self.active:
+            self.active[sym] = [ws for ws in self.active[sym] if ws != websocket]
+
+    async def broadcast(self, sym: str, data: dict):
+        if sym not in self.active:
+            return
+        dead = []
+        for ws in self.active[sym]:
+            try:
+                if ws.client_state == WebSocketState.CONNECTED:
+                    await ws.send_json(data)
+            except Exception:
+                dead.append(ws)
+        for ws in dead:
+            self.active[sym].remove(ws)
+
+manager = ConnectionManager()
+
+@app.websocket("/stream/{sym}")
+async def stream_symbol(websocket: WebSocket, sym: str):
+    """Stream real-time trades for a symbol."""
+    await manager.connect(websocket, sym.upper())
+    sym = sym.upper()
+
+    try:
+        # Send initial snapshot
+        snapshot = q(
+            "{[s] select[-50] time, price, size from trade where date=.z.d, sym=s}",
+            kx.SymbolAtom(sym)
+        ).pd()
+        await websocket.send_json({
+            "type": "snapshot",
+            "sym": sym,
+            "data": snapshot.to_dict(orient="records")
+        })
+
+        # Keep connection alive, receive control messages
+        while True:
+            try:
+                msg = await asyncio.wait_for(websocket.receive_json(), timeout=30)
+                if msg.get("action") == "ping":
+                    await websocket.send_json({"type": "pong"})
+            except asyncio.TimeoutError:
+                # Send keepalive
+                await websocket.send_json({"type": "heartbeat"})
+
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, sym)
+        logger.info(f"WS disconnected: {sym}")
+
+# Background task: poll kdb+ and broadcast updates
+async def poll_and_broadcast():
+    """Poll kdb+ for new trades and broadcast to subscribers."""
+    last_time = {}  # sym -&gt; last seen time
+
+    while True:
+        await asyncio.sleep(0.5)  # 500ms polling interval
+
+        for sym in list(manager.active.keys()):
+            if not manager.active.get(sym):
+                continue
+            try:
+                cutoff = last_time.get(sym, "00:00:00.000")
+                new_trades = q(
+                    "{[s;t] select time, price, size from trade where date=.z.d, sym=s, time&gt;t}",
+                    kx.SymbolAtom(sym),
+                    kx.TimeAtom(cutoff)
+                ).pd()
+
+                if len(new_trades) &gt; 0:
+                    last_time[sym] = str(new_trades['time'].max())
+                    await manager.broadcast(sym, {
+                        "type": "update",
+                        "sym": sym,
+                        "trades": new_trades.to_dict(orient="records")
+                    })
+            except Exception as e:
+                logger.error(f"Poll error for {sym}: {e}")
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(poll_and_broadcast())
+</code></pre>
+<h2 id="handling-back-pressure"><a class="header" href="#handling-back-pressure">Handling Back-Pressure</a></h2>
+<p>When Q is producing data faster than consumers can handle it, you need a back-pressure strategy:</p>
+<pre><code class="language-q">/ Simple back-pressure in Q: check send buffer before sending
+broadcastWithBackPressure: {[h; data]
+    / .z.W[h] = bytes in send buffer for handle h
+    buffer_size: .z.W[h];
+
+    $[buffer_size &gt; 1000000;   / 1MB threshold
+        / Buffer full: drop or queue
+        (-1 "Dropping update for slow consumer: ", string h);
+        / Buffer OK: send
+        neg[h] .j.j data]
+    }
+</code></pre>
+<p>For Kafka as a buffer (the right architectural answer for high-throughput):</p>
+<pre><code>kdb+ tickerplant
+    → publishes to Kafka topic (Q→Kafka producer)
+    → Kafka topic acts as buffer
+    → slow consumers read from Kafka at their own pace
+</code></pre>
+<p>This decouples the producer (kdb+) from the consumer’s throughput.</p>
+<h2 id="the-complete-real-time-pipeline"><a class="header" href="#the-complete-real-time-pipeline">The Complete Real-Time Pipeline</a></h2>
+<p>Putting it together: Kafka → Q → WebSocket → Browser:</p>
+<pre><code>[Market Data Feed]
+        ↓
+[Kafka Topic: raw-trades]
+        ↓
+[kdb+ Feed Handler] → [Tickerplant] → [RDB]
+                                     ↓
+                            [WebSocket Server]
+                                     ↓
+                         [Browser Dashboard]
+                                     ↓
+                              [REST API]
+                                     ↓
+                         [External Consumers]
+</code></pre>
+<p>Each layer has a clear responsibility:</p>
+<ul>
+<li><strong>Kafka</strong>: durable message queue, decouples feed from processing</li>
+<li><strong>kdb+ tickerplant</strong>: time-stamping, logging, fan-out</li>
+<li><strong>RDB</strong>: in-memory storage for today’s data</li>
+<li><strong>WebSocket server</strong>: real-time push to browsers</li>
+<li><strong>REST API</strong>: request-response for historical data</li>
+</ul>
+<p>Q sits in the middle of this, doing what it does best: storing and querying time-series data at speed.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="rest.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="devtools.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="rest.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="devtools.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

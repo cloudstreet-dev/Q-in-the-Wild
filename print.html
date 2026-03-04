@@ -1,0 +1,3638 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Q in the Wild</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A kdb+/q developer&#x27;s guide to integrating with the rest of the world — Python, Rust, R, REST, streaming, and beyond.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-b88233a2.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-4f3ba797.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Q in the Wild</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="q-in-the-wild-breaking-out-of-the-silo"><a class="header" href="#q-in-the-wild-breaking-out-of-the-silo">Q in the Wild: Breaking Out of the Silo</a></h1>
+<p>Q is a strange language to love. Its syntax looks like someone bet a Lisp programmer they couldn’t make a language with fewer vowels. Its documentation assumes you have a specific kind of patience. And yet — once it clicks — you find yourself genuinely irritated when you have to do time-series work in anything else.</p>
+<p>The problem is that Q exists in a silo. Not because it has to, but because the path of least resistance in a kdb+ shop is to write everything in Q. Tick infrastructure in Q. Analytics in Q. The internal tooling script that one guy wrote in 2011 that nobody touches? Q. The REST endpoint that <em>technically</em> works but falls over if you look at it wrong? Wrapped Q.</p>
+<p>This book is about breaking out of that pattern — not by replacing Q, but by making it a first-class participant in a modern polyglot stack.</p>
+<h2 id="what-this-book-covers"><a class="header" href="#what-this-book-covers">What This Book Covers</a></h2>
+<p>We’ll go through the major integration points:</p>
+<p><strong>Language bridges</strong>: Python (via PyQ and qPython), Rust (via FFI and IPC), and R (via qserver and direct IPC). These aren’t toy examples — we’ll cover real patterns for passing typed data across language boundaries without your timestamps becoming floats.</p>
+<p><strong>APIs and protocols</strong>: Q’s IPC protocol in depth, REST API wrappers, and how to build something external consumers can actually call without needing a Q license.</p>
+<p><strong>Streaming</strong>: Kafka integration, WebSocket servers, and the tick plant patterns that let Q participate in real-time data pipelines rather than just sitting at the end of one.</p>
+<p><strong>Tooling</strong>: IDEs that won’t make you feel like a hermit, linters, formatters, and the state of Q developer experience in 2026 (better than 2020, worse than Python, honestly not bad).</p>
+<h2 id="what-this-book-assumes"><a class="header" href="#what-this-book-assumes">What This Book Assumes</a></h2>
+<p>You know Q. Not necessarily at guru level, but you can write a functional update, you know why <code>select</code> beats a loop, and you’ve debugged a type error at least once by adding backtick casts until it stopped complaining.</p>
+<p>You know at least one of: Python, Rust, or R. Ideally more.</p>
+<p>You’ve wondered at least once why Q can’t just have a decent package manager.</p>
+<h2 id="the-ipc-foundation"><a class="header" href="#the-ipc-foundation">The IPC Foundation</a></h2>
+<p>Before we dive into language-specific integrations, one concept runs through everything: Q’s IPC protocol. It’s the wire format, the handshake, the reason all of this works. It’s worth understanding it once at a conceptual level before we layer libraries on top.</p>
+<p>Q communicates over TCP. A kdb+ process is always one of:</p>
+<ul>
+<li>A <strong>server</strong>: listening on a port, handling incoming connections</li>
+<li>A <strong>client</strong>: connecting to a server and sending queries</li>
+<li>A <strong>gateway</strong>: doing both (and ideally doing it without being a single point of failure)</li>
+</ul>
+<p>The default IPC port is set with the <code>-p</code> flag at startup:</p>
+<pre><code class="language-q">/ Start a q process listening on port 5001
+/ q -p 5001
+</code></pre>
+<p>From another Q process:</p>
+<pre><code class="language-q">/ Open a handle to a remote process
+h: hopen `::5001
+/ Execute a query on that process
+h "2 + 2"
+/ Execute with arguments (safer pattern)
+h (`func; arg1; arg2)
+/ Close when done
+hclose h
+</code></pre>
+<p>The synchronous call blocks until the remote returns. The asynchronous variant uses a negative handle:</p>
+<pre><code class="language-q">/ Asynchronous — fire and forget
+neg[h] "slow_computation[]"
+</code></pre>
+<p>This protocol — simple, binary, reasonably efficient — is what every library in this book is wrapping. When you understand what’s happening at the wire level, library choices become clearer: you’re picking how you want to speak Q’s native language, not whether to speak it.</p>
+<h2 id="a-note-on-versions"><a class="header" href="#a-note-on-versions">A Note on Versions</a></h2>
+<p>This book targets kdb+ 4.1 (the free 64-bit on-demand version works for most examples) and the 2025–2026 versions of the libraries discussed. Where a library has changed significantly or has a version-specific gotcha, we’ll call it out.</p>
+<p>The free 64-bit kdb+ license from KX works for everything in this book that doesn’t require enterprise features. Get it from <a href="https://kx.com/developers/download-licenses/">kx.com</a>. You know this already, but: the 32-bit free version is fine for experiments but will run into memory limits fast on real data.</p>
+<h2 id="setting-up"><a class="header" href="#setting-up">Setting Up</a></h2>
+<p>If you’re starting fresh, you want:</p>
+<pre><code class="language-bash"># Minimum viable kdb+ dev environment
+mkdir -p ~/q &amp;&amp; cd ~/q
+
+# Download kdb+ (macOS arm64 shown; adjust for your platform)
+# From kx.com after registering
+unzip linuxx86.zip  # or macosx.zip, w32.zip, etc.
+
+# Add to PATH
+echo 'export PATH="$HOME/q/m64:$PATH"' &gt;&gt; ~/.zshrc  # macOS Apple Silicon: m64
+source ~/.zshrc
+
+# Verify
+q -p 5001
+# Should start a q process on port 5001
+# \\ to exit
+</code></pre>
+<p>Each chapter after this one includes its own setup for the specific integration — we won’t make you install everything upfront.</p>
+<h2 id="the-philosophy"><a class="header" href="#the-philosophy">The Philosophy</a></h2>
+<p>The goal is not to make Q look like Python. Q developers who want Python should use Python. The goal is to make Q <em>work with</em> Python (and Rust, and R, and Kafka, and your REST clients) without losing what makes Q worth using: its speed on columnar time-series data, its expressive query syntax, its tick infrastructure.</p>
+<p>Q as a database. Q as a compute engine. Q as a streaming backbone. Everything else as a consumer, a producer, or an orchestrator.</p>
+<p>That’s the architecture this book is pointing toward. Let’s build it.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="python-and-q-pyq-qpython-and-getting-along"><a class="header" href="#python-and-q-pyq-qpython-and-getting-along">Python and Q: PyQ, qPython, and Getting Along</a></h1>
+<p>There are two serious Python-Q integration libraries, and they have different philosophies, different trade-offs, and different ways of making you feel like you chose wrong. Let’s save you the afternoon of discovery.</p>
+<p><strong>PyQ</strong>: KX’s official library. Deep integration — runs Python inside the q process, shares memory, no serialization overhead for in-process calls. Requires a real KX installation. Heavyweight but serious.</p>
+<p><strong>qPython</strong>: Pure Python, pure IPC. Connects to a running kdb+ process over the network. No special installation, no KX runtime dependency. The right choice for most external consumers of kdb+ data.</p>
+<p><strong>pykx</strong>: KX’s newer, actively-developed library. Wraps the KX C API, can run embedded or in IPC mode, has a pandas-compatible API, and is where KX is putting its energy. If you’re starting fresh, this is the one.</p>
+<p>We’ll cover all three, but spend the most time on qPython (because you probably already have a kdb+ process and just want to talk to it) and pykx (because it’s the future).</p>
+<h2 id="qpython-the-pragmatic-choice"><a class="header" href="#qpython-the-pragmatic-choice">qPython: The Pragmatic Choice</a></h2>
+<h3 id="installation"><a class="header" href="#installation">Installation</a></h3>
+<pre><code class="language-bash">pip install qpython
+</code></pre>
+<p>That’s it. No KX runtime. Works against any kdb+ 3.x or 4.x process.</p>
+<h3 id="connecting-and-basic-queries"><a class="header" href="#connecting-and-basic-queries">Connecting and Basic Queries</a></h3>
+<pre><code class="language-python">from qpython import qconnection
+from qpython.qtype import QException
+
+# Connect to a running kdb+ process
+q = qconnection.QConnection(host='localhost', port=5001)
+q.open()
+
+# Execute a simple expression
+result = q('2 + 2')
+print(result)  # 4
+
+# Execute a function call
+result = q('til 10')
+print(result)  # [0 1 2 3 4 5 6 7 8 9]
+
+q.close()
+</code></pre>
+<p>Use it as a context manager to avoid forgetting to close:</p>
+<pre><code class="language-python">from qpython import qconnection
+
+with qconnection.QConnection(host='localhost', port=5001) as q:
+    result = q('select from trade where date=2024.01.15, sym=`AAPL')
+    print(result)
+</code></pre>
+<h3 id="type-mapping-where-things-get-interesting"><a class="header" href="#type-mapping-where-things-get-interesting">Type Mapping: Where Things Get Interesting</a></h3>
+<p>Q’s type system is richer than Python’s. When qPython receives data, it maps Q types to numpy arrays and pandas objects. Understanding this mapping saves debugging sessions.</p>
+<pre><code class="language-python">import numpy as np
+from qpython import qconnection
+from qpython.qtype import (
+    QSymbolList, QTimestampList, QFloat64List, QLONG_LIST
+)
+
+with qconnection.QConnection(host='localhost', port=5001, pandas=True) as q:
+    # With pandas=True, tables come back as DataFrames
+    df = q('select time, sym, price, size from trade where date=2024.01.15')
+    print(df.dtypes)
+    # time     datetime64[ns]
+    # sym      object          &lt;- Q symbols become Python strings
+    # price    float64
+    # size     int64
+
+    print(df.head())
+</code></pre>
+<p>The <code>pandas=True</code> flag is almost always what you want for tabular data. Without it, you get a QTable object that you then have to convert anyway.</p>
+<h3 id="sending-data-to-q"><a class="header" href="#sending-data-to-q">Sending Data to Q</a></h3>
+<p>Pushing data from Python to Q is where type handling gets tricky. Q is strict about types; Python is not.</p>
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+from qpython import qconnection
+from qpython.qtype import QSymbolList, QLONG, QFLOAT64
+
+with qconnection.QConnection(host='localhost', port=5001, pandas=True) as q:
+    # Create a DataFrame to push
+    df = pd.DataFrame({
+        'time': pd.to_datetime(['2024-01-15 09:30:00', '2024-01-15 09:30:01']),
+        'sym': ['AAPL', 'MSFT'],
+        'price': [185.50, 375.20],
+        'size': [100, 200]
+    })
+
+    # Push a variable into Q's namespace
+    q('set', np.string_('mydata'), df)
+
+    # Verify it's there
+    result = q('count mydata')
+    print(result)  # 2
+
+    # Now query it
+    result = q('select from mydata where sym=`AAPL')
+    print(result)
+</code></pre>
+<h3 id="the-symbol-problem"><a class="header" href="#the-symbol-problem">The Symbol Problem</a></h3>
+<p>Q symbols and Python strings are conceptually similar but mechanically different. When you query Q and get back symbol data, qPython gives you Python bytes objects by default (without <code>pandas=True</code>) or strings (with it). When you <em>send</em> symbols to Q, you need to be explicit:</p>
+<pre><code class="language-python">from qpython.qtype import QSymbolList
+import numpy as np
+
+with qconnection.QConnection(host='localhost', port=5001) as q:
+    # Wrong: Python list of strings won't be interpreted as Q symbols
+    # q('insert', np.string_('mytable'), [['AAPL', 'MSFT'], [100, 200]])
+
+    # Right: use QSymbolList for symbol columns
+    syms = QSymbolList(np.array(['AAPL', 'MSFT'], dtype='S'))
+    sizes = np.array([100, 200], dtype=np.int64)
+
+    q('`mytable insert', (syms, sizes))
+</code></pre>
+<p>The difference between bytes and symbols matters in Q. If <code>sym</code> in your trade table is a symbol and you send bytes, you’ll get a type error on join operations that will be deeply confusing for ten minutes.</p>
+<h3 id="asynchronous-calls"><a class="header" href="#asynchronous-calls">Asynchronous Calls</a></h3>
+<p>For fire-and-forget operations (publishing to a tickerplant, for instance):</p>
+<pre><code class="language-python">from qpython import qconnection
+
+with qconnection.QConnection(host='localhost', port=5001) as q:
+    # Synchronous — waits for response
+    result = q('.u.upd', np.string_('trade'), data)
+
+    # Asynchronous — returns immediately
+    q('.u.upd', np.string_('trade'), data, sync=False)
+</code></pre>
+<p>Be careful with async calls in tight loops — you can flood a Q process faster than it can handle messages. Add a small sleep or batch your updates if you’re publishing high-frequency data.</p>
+<h3 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h3>
+<p>Q errors propagate back as <code>QException</code>:</p>
+<pre><code class="language-python">from qpython.qtype import QException
+
+with qconnection.QConnection(host='localhost', port=5001) as q:
+    try:
+        result = q('1 + `sym')  # type error
+    except QException as e:
+        print(f"Q error: {e}")  # type
+    except Exception as e:
+        print(f"Connection error: {e}")
+</code></pre>
+<h2 id="pykx-the-modern-choice"><a class="header" href="#pykx-the-modern-choice">pykx: The Modern Choice</a></h2>
+<p>pykx is KX’s actively-maintained library that has both an embedded mode (runs kdb+ in-process) and an IPC mode (connects to a running process). The API is cleaner than qPython and it has better pandas and numpy integration.</p>
+<h3 id="installation-1"><a class="header" href="#installation-1">Installation</a></h3>
+<pre><code class="language-bash">pip install pykx
+</code></pre>
+<p>For IPC-only mode (no KX license needed):</p>
+<pre><code class="language-bash"># Set this before importing pykx to use IPC-only mode
+export PYKX_LICENSED_LIBRARIES=false
+# Or in Python:
+import os
+os.environ['PYKX_LICENSED_LIBRARIES'] = 'false'
+</code></pre>
+<h3 id="ipc-mode"><a class="header" href="#ipc-mode">IPC Mode</a></h3>
+<pre><code class="language-python">import pykx as kx
+
+# Connect to a running kdb+ process
+with kx.SyncQConnection(host='localhost', port=5001) as q:
+    # Execute q code
+    result = q('select from trade where date=2024.01.15')
+
+    # Convert to pandas
+    df = result.pd()
+    print(df)
+
+    # Or arrow
+    table = result.pa()
+</code></pre>
+<h3 id="pykx-type-system"><a class="header" href="#pykx-type-system">pykx Type System</a></h3>
+<p>pykx has a clean type hierarchy that mirrors Q’s:</p>
+<pre><code class="language-python">import pykx as kx
+
+with kx.SyncQConnection(host='localhost', port=5001) as q:
+    # Atoms
+    x = q('42')
+    print(type(x))         # pykx.LongAtom
+    print(x.py())          # 42 (Python int)
+
+    # Lists
+    xs = q('1 2 3f')
+    print(type(xs))        # pykx.FloatVector
+    print(xs.np())         # numpy array([1., 2., 3.])
+
+    # Tables come back as pykx.Table
+    tbl = q('([] a:1 2 3; b:`x`y`z)')
+    print(tbl.pd())        # pandas DataFrame
+</code></pre>
+<h3 id="sending-typed-data"><a class="header" href="#sending-typed-data">Sending Typed Data</a></h3>
+<pre><code class="language-python">import pykx as kx
+import pandas as pd
+import numpy as np
+
+with kx.SyncQConnection(host='localhost', port=5001) as q:
+    # pykx can convert pandas DataFrames directly
+    df = pd.DataFrame({
+        'sym': ['AAPL', 'MSFT', 'GOOG'],
+        'price': [185.5, 375.2, 140.8],
+        'size': [100, 200, 150]
+    })
+
+    # Set a variable in Q
+    q['mydata'] = df
+
+    # Call a Q function with a Python argument
+    result = q('{[t] select from t where price &gt; 200}', df)
+    print(result.pd())
+</code></pre>
+<h3 id="async-connections"><a class="header" href="#async-connections">Async Connections</a></h3>
+<pre><code class="language-python">import pykx as kx
+import asyncio
+
+async def publish_data():
+    async with kx.AsyncQConnection(host='localhost', port=5001) as q:
+        # Async query
+        result = await q('select from trade')
+        df = result.pd()
+
+        # Fire-and-forget publish
+        await q('.u.upd', 'trade', df, wait=False)
+</code></pre>
+<h2 id="pyq-the-deep-integration-option"><a class="header" href="#pyq-the-deep-integration-option">PyQ: The Deep Integration Option</a></h2>
+<p>PyQ is for when you want Python to run <em>inside</em> the q process — sharing memory, zero serialization overhead, using Q data structures directly from Python. It’s powerful and it requires a full KX installation.</p>
+<pre><code class="language-bash">pip install pyq
+# Run with q's Python interpreter:
+pyq my_script.py
+</code></pre>
+<p>Inside a PyQ session:</p>
+<pre><code class="language-python">from pyq import q, K
+
+# Q functions are accessible as attributes
+q.til(10)            # calls q's til function
+q('.', 'mylib.q')   # loads a Q script
+
+# K objects are Q values
+x = K(3.14)
+y = q.sqrt(x)
+
+# Create Q tables from Python
+import numpy as np
+data = {
+    'price': np.array([100.5, 101.2, 99.8]),
+    'size': np.array([100, 200, 150], dtype=np.int64)
+}
+q['mytrade'] = data
+</code></pre>
+<p>PyQ’s strength is in embedded analytics — Python ML libraries operating on Q data without copying it. If you’re running TensorFlow or scikit-learn against live kdb+ data and latency matters, PyQ is the right architecture.</p>
+<h2 id="which-one-should-you-use"><a class="header" href="#which-one-should-you-use">Which One Should You Use?</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Scenario</th><th>Library</th></tr>
+</thead>
+<tbody>
+<tr><td>External service consuming kdb+ data</td><td>qPython or pykx IPC</td></tr>
+<tr><td>New project, greenfield setup</td><td>pykx</td></tr>
+<tr><td>High-frequency publisher to tickerplant</td><td>qPython (async) or pykx</td></tr>
+<tr><td>ML/analytics running inside q process</td><td>PyQ</td></tr>
+<tr><td>Don’t have KX license, just want data</td><td>qPython</td></tr>
+<tr><td>Need pandas/arrow integration</td><td>pykx</td></tr>
+</tbody>
+</table>
+</div>
+<p>The honest answer: <strong>start with pykx</strong>. Its API is cleaner, it’s actively maintained, and it handles the type system better than qPython. Use qPython if you need a lighter dependency or you’re working with legacy code that already uses it. Use PyQ only if you genuinely need in-process Python execution.</p>
+<h2 id="a-complete-example-time-series-analysis-pipeline"><a class="header" href="#a-complete-example-time-series-analysis-pipeline">A Complete Example: Time-Series Analysis Pipeline</a></h2>
+<p>This is the pattern that actually comes up in production — Python consuming kdb+ data for analysis, then writing results back.</p>
+<pre><code class="language-python">import pykx as kx
+import pandas as pd
+import numpy as np
+from scipy import stats
+
+def compute_vwap(df: pd.DataFrame) -&gt; pd.DataFrame:
+    """Compute VWAP from trade data."""
+    df['notional'] = df['price'] * df['size']
+    vwap = df.groupby('sym').apply(
+        lambda x: x['notional'].sum() / x['size'].sum()
+    ).reset_index()
+    vwap.columns = ['sym', 'vwap']
+    return vwap
+
+def compute_volatility(df: pd.DataFrame, window: int = 20) -&gt; pd.DataFrame:
+    """Rolling annualized volatility."""
+    df = df.sort_values(['sym', 'time'])
+    df['log_ret'] = df.groupby('sym')['price'].transform(
+        lambda x: np.log(x / x.shift(1))
+    )
+    df['vol'] = df.groupby('sym')['log_ret'].transform(
+        lambda x: x.rolling(window).std() * np.sqrt(252)
+    )
+    return df[['time', 'sym', 'vol']].dropna()
+
+def main():
+    with kx.SyncQConnection(host='localhost', port=5001) as q:
+        # Pull today's trade data
+        trades = q('''
+            select time, sym, price, size
+            from trade
+            where date=.z.d,
+                  sym in `AAPL`MSFT`GOOG`AMZN`META
+        ''').pd()
+
+        print(f"Loaded {len(trades):,} trades")
+
+        # Compute analytics in Python
+        vwap = compute_vwap(trades)
+        vol = compute_volatility(trades)
+
+        # Write results back to Q
+        q['analytics_vwap'] = vwap
+        q['analytics_vol'] = vol
+
+        # Or insert into a Q table
+        q('{`results_vwap upsert x}', vwap)
+
+        print("Analytics written to Q")
+        print(vwap)
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<h2 id="timestamp-handling-the-thing-that-will-burn-you-once"><a class="header" href="#timestamp-handling-the-thing-that-will-burn-you-once">Timestamp Handling (The Thing That Will Burn You Once)</a></h2>
+<p>Q timestamps are nanoseconds since 2000.01.01. Python datetimes are microsecond-resolution since 1970-01-01. Every library does the conversion for you, but sometimes it goes wrong.</p>
+<pre><code class="language-python">import pykx as kx
+import pandas as pd
+
+with kx.SyncQConnection(host='localhost', port=5001) as q:
+    # Q timestamp
+    ts = q('2024.01.15D09:30:00.123456789')
+
+    # pykx converts correctly
+    print(ts.py())  # datetime.datetime(2024, 1, 15, 9, 30, 0, 123456)
+                    # Note: microseconds, nanoseconds truncated
+
+    # For nanosecond precision, use numpy
+    print(ts.np())  # numpy.datetime64('2024-01-15T09:30:00.123456789')
+
+    # pandas preserves nanoseconds
+    df = q('([] t:enlist 2024.01.15D09:30:00.123456789)').pd()
+    print(df['t'].dtype)      # datetime64[ns]
+    print(df['t'].iloc[0])    # 2024-01-15 09:30:00.123456789
+</code></pre>
+<p>The gotcha: if you use <code>ts.py()</code> on a timestamp column, you lose the nanoseconds silently. Use <code>.np()</code> or work through pandas for nanosecond-resolution data.</p>
+<h2 id="authentication"><a class="header" href="#authentication">Authentication</a></h2>
+<p>Both libraries support authenticated connections:</p>
+<pre><code class="language-python"># qPython
+q = qconnection.QConnection(
+    host='localhost',
+    port=5001,
+    username='myuser',
+    password='mypass'
+)
+
+# pykx
+q = kx.SyncQConnection(
+    host='localhost',
+    port=5001,
+    username='myuser',
+    password='mypass'
+)
+</code></pre>
+<p>Q’s authentication is username:password in the connection handshake. If the server has <code>.z.pw</code> defined, it uses that for validation; otherwise it uses the OS password file. For production, use <code>.z.pw</code> with proper credential management — don’t hardcode passwords in code that’s going into version control.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="rust-and-q-ffi-ipc-and-high-performance-integration"><a class="header" href="#rust-and-q-ffi-ipc-and-high-performance-integration">Rust and Q: FFI, IPC, and High-Performance Integration</a></h1>
+<p>Rust and Q are natural partners in the sense that both communities believe in doing things the right way even when doing it wrong would be faster. They differ in that the Rust compiler will tell you exactly what you did wrong, while Q will silently coerce your type and let you discover the problem three joins later.</p>
+<p>There are two ways to connect Rust to kdb+:</p>
+<ol>
+<li><strong>IPC over TCP</strong>: Connect to a running kdb+ process, speak the wire protocol. This is the same protocol everything else uses.</li>
+<li><strong>FFI via the C API</strong>: Load a shared library into Rust and call kdb+ functions directly. Faster, more complex, requires the C API headers.</li>
+</ol>
+<p>For 95% of use cases, IPC is the right choice. For the other 5% — where you’re embedding kdb+ in a Rust application, or writing a C extension for kdb+ in Rust — FFI is the path.</p>
+<h2 id="ipc-the-kdbplus-crate"><a class="header" href="#ipc-the-kdbplus-crate">IPC: The <code>kdbplus</code> Crate</a></h2>
+<p>The <code>kdbplus</code> crate provides both IPC client functionality and FFI bindings. Start with IPC.</p>
+<pre><code class="language-toml"># Cargo.toml
+[dependencies]
+kdbplus = { version = "0.5", features = ["ipc"] }
+tokio = { version = "1", features = ["full"] }
+</code></pre>
+<h3 id="basic-connection"><a class="header" href="#basic-connection">Basic Connection</a></h3>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Connect to a running kdb+ process
+    let mut client = QStream::connect(ConnectionMethod::TCP, "localhost", 5001, "").await?;
+
+    // Execute a q expression
+    let result = client.send_sync_message(&amp;"til 10").await?;
+    println!("{}", result);  // 0 1 2 3 4 5 6 7 8 9
+
+    Ok(())
+}</code></pre>
+<p>The empty string in <code>connect</code> is the auth credentials (<code>"username:password"</code> if needed). The <code>send_sync_message</code> call blocks until the remote q process responds — same as a synchronous IPC call in Q itself.</p>
+<h3 id="type-system"><a class="header" href="#type-system">Type System</a></h3>
+<p>This is where the THAT’S-how-you-do-it moment lives. kdbplus represents Q values with a <code>K</code> type that mirrors Q’s type hierarchy:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut client = QStream::connect(ConnectionMethod::TCP, "localhost", 5001, "").await?;
+
+    // Integer atom -&gt; K with type QLONG
+    let x: K = client.send_sync_message(&amp;"42").await?;
+    println!("Type: {:?}", x.get_type());   // QLONG
+    println!("Value: {}", x.get_long()?);   // 42
+
+    // Float list
+    let xs: K = client.send_sync_message(&amp;"1.0 2.5 3.7").await?;
+    let floats: Vec&lt;f64&gt; = xs.get_float_list()?;
+    println!("{:?}", floats);   // [1.0, 2.5, 3.7]
+
+    // Symbol list
+    let syms: K = client.send_sync_message(&amp;"`AAPL`MSFT`GOOG").await?;
+    let symbols: Vec&lt;&amp;str&gt; = syms.get_symbol_list()?;
+    println!("{:?}", symbols);   // ["AAPL", "MSFT", "GOOG"]
+
+    // Table
+    let table: K = client.send_sync_message(&amp;"([] sym:`AAPL`MSFT; price:185.5 375.2)").await?;
+    // Tables are dictionaries of lists in Q; iterate columns
+    let col_names = table.get_keys()?;
+    for name in col_names {
+        println!("Column: {}", name);
+    }
+
+    Ok(())
+}</code></pre>
+<h3 id="querying-a-table"><a class="header" href="#querying-a-table">Querying a Table</a></h3>
+<p>The pattern for real data retrieval — execute a Q select, get a table back, process it:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+use std::collections::HashMap;
+
+#[derive(Debug)]
+struct Trade {
+    sym: String,
+    price: f64,
+    size: i64,
+}
+
+async fn get_trades(
+    client: &amp;mut QStream,
+    date: &amp;str,
+    syms: &amp;[&amp;str],
+) -&gt; Result&lt;Vec&lt;Trade&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    let sym_list = syms.iter()
+        .map(|s| format!("`{}", s))
+        .collect::&lt;Vec&lt;_&gt;&gt;()
+        .join("");
+
+    let query = format!(
+        "select sym, price, size from trade where date={}, sym in {}",
+        date, sym_list
+    );
+
+    let result = client.send_sync_message(&amp;query.as_str()).await?;
+
+    // Extract columns from the table
+    let sym_col: Vec&lt;&amp;str&gt; = result.get_column("sym")?.get_symbol_list()?;
+    let price_col: Vec&lt;f64&gt; = result.get_column("price")?.get_float_list()?;
+    let size_col: Vec&lt;i64&gt; = result.get_column("size")?.get_long_list()?;
+
+    let trades = sym_col.into_iter()
+        .zip(price_col.into_iter())
+        .zip(size_col.into_iter())
+        .map(|((sym, price), size)| Trade {
+            sym: sym.to_string(),
+            price,
+            size,
+        })
+        .collect();
+
+    Ok(trades)
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut client = QStream::connect(ConnectionMethod::TCP, "localhost", 5001, "").await?;
+
+    let trades = get_trades(&amp;mut client, "2024.01.15", &amp;["AAPL", "MSFT"]).await?;
+
+    for trade in &amp;trades {
+        println!("{:?}", trade);
+    }
+
+    println!("Total trades: {}", trades.len());
+    Ok(())
+}</code></pre>
+<h3 id="sending-data-to-q-1"><a class="header" href="#sending-data-to-q-1">Sending Data to Q</a></h3>
+<p>Pushing Rust data into a Q process requires constructing <code>K</code> objects:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut client = QStream::connect(ConnectionMethod::TCP, "localhost", 5001, "").await?;
+
+    // Build a Q table from Rust data
+    let syms = K::new_symbol_list(vec!["AAPL".to_string(), "MSFT".to_string()], qattribute::NONE);
+    let prices = K::new_float_list(vec![185.5_f64, 375.2_f64], qattribute::NONE);
+    let sizes = K::new_long_list(vec![100_i64, 200_i64], qattribute::NONE);
+
+    let table = K::new_table(
+        &amp;["sym", "price", "size"],
+        &amp;[syms, prices, sizes]
+    )?;
+
+    // Set it as a variable in the Q process
+    let set_query = K::new_mixed_list(vec![
+        K::new_string("set", qattribute::NONE),
+        K::new_symbol("`rust_data"),
+        table,
+    ]);
+    client.send_sync_message(&amp;set_query).await?;
+
+    // Verify
+    let count = client.send_sync_message(&amp;"count rust_data").await?;
+    println!("Rows inserted: {}", count.get_long()?);  // 2
+
+    Ok(())
+}</code></pre>
+<h3 id="async-streaming"><a class="header" href="#async-streaming">Async Streaming</a></h3>
+<p>For continuous data feeds — subscribing to a tickerplant, for example:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+use tokio::time::{sleep, Duration};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut client = QStream::connect(ConnectionMethod::TCP, "localhost", 5001, "").await?;
+
+    // Subscribe to a tickerplant
+    // Standard tick subscriber pattern: .u.sub[`trade; `]
+    client.send_sync_message(&amp;".u.sub[`trade; `]").await?;
+    println!("Subscribed to trade feed");
+
+    // Listen for incoming messages
+    loop {
+        // receive_message blocks until a message arrives
+        let msg = client.receive_message().await?;
+
+        // Tickerplant sends: (`upd; `trade; table_data)
+        if let Ok(msg_list) = msg.get_mixed_list() {
+            if msg_list.len() == 3 {
+                let func_name = msg_list[0].get_symbol()?;
+                let table_name = msg_list[1].get_symbol()?;
+                let data = &amp;msg_list[2];
+
+                if func_name == "upd" &amp;&amp; table_name == "trade" {
+                    let price_col: Vec&lt;f64&gt; = data.get_column("price")?.get_float_list()?;
+                    let sym_col: Vec&lt;&amp;str&gt; = data.get_column("sym")?.get_symbol_list()?;
+
+                    for (sym, price) in sym_col.iter().zip(price_col.iter()) {
+                        println!("UPDATE: {} @ {:.2}", sym, price);
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+<p>This is the real-time subscriber pattern. The kdb+ tickerplant calls <code>.u.upd</code> on all subscribers when new data arrives; the Rust side receives these as incoming messages without polling.</p>
+<h2 id="ffi-the-c-api"><a class="header" href="#ffi-the-c-api">FFI: The C API</a></h2>
+<p>When you need to go deeper — writing kdb+ extensions in Rust, embedding kdb+ in a Rust process, or implementing a custom feed handler — you need the C API.</p>
+<p>The <code>kdbplus</code> crate includes FFI bindings in its <code>api</code> feature:</p>
+<pre><code class="language-toml">[dependencies]
+kdbplus = { version = "0.5", features = ["api"] }
+</code></pre>
+<h3 id="writing-a-kdb-extension-in-rust"><a class="header" href="#writing-a-kdb-extension-in-rust">Writing a kdb+ Extension in Rust</a></h3>
+<p>kdb+ extensions are shared libraries loaded with <code>2:</code>. The extension exports C-compatible functions that take and return <code>K</code> values.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// src/lib.rs
+use kdbplus::api::*;
+use kdbplus::api::native::*;
+
+// Function signature must match kdb+ C API: K func(K x)
+#[no_mangle]
+pub extern "C" fn rust_add(x: K, y: K) -&gt; K {
+    // Extract values
+    let a = unsafe { x.get_long() };
+    let b = unsafe { y.get_long() };
+
+    // Compute result
+    let result = a + b;
+
+    // Return a new K long atom
+    unsafe { kj(result) }
+}
+
+// More complex: process a list
+#[no_mangle]
+pub extern "C" fn rust_squares(x: K) -&gt; K {
+    unsafe {
+        let n = x.get_count();
+        let result = ktn(KJ as i32, n as i64);  // allocate long list
+
+        for i in 0..n {
+            let val = kJ(x).add(i).read();
+            kJ(result).add(i).write(val * val);
+        }
+
+        result
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>Build as a dynamic library:</p>
+<pre><code class="language-toml"># Cargo.toml
+[lib]
+crate-type = ["cdylib"]
+</code></pre>
+<pre><code class="language-bash">cargo build --release
+# Output: target/release/libmyextension.dylib (macOS) or .so (Linux)
+</code></pre>
+<p>Load from Q:</p>
+<pre><code class="language-q">/ Load the shared library
+mylib: `:/path/to/libmyextension 2: (`rust_add; 2)
+squares: `:/path/to/libmyextension 2: (`rust_squares; 1)
+
+/ Call the Rust functions
+mylib[3; 4]       / 7
+squares til 10    / 0 1 4 9 16 25 36 49 64 81
+</code></pre>
+<h3 id="memory-management-in-the-c-api"><a class="header" href="#memory-management-in-the-c-api">Memory Management in the C API</a></h3>
+<p>This is the part where the Rust compiler cannot save you. Q manages memory with reference counting. When a Rust function returns a <code>K</code> value to Q, Q owns it. The rules:</p>
+<ul>
+<li>Arguments passed into your function have their reference count incremented by Q before the call. You don’t need to increment them again.</li>
+<li>The return value from your function becomes Q’s property. Don’t free it.</li>
+<li>If you create a <code>K</code> value inside your function and it becomes an argument to another function (not the return value), you may need to call <code>r0</code> to decrement its reference count.</li>
+</ul>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[no_mangle]
+pub extern "C" fn rust_filter_positive(x: K) -&gt; K {
+    unsafe {
+        let n = x.get_count();
+        let mut positives: Vec&lt;i64&gt; = Vec::new();
+
+        for i in 0..n {
+            let val = kJ(x).add(i).read();
+            if val &gt; 0 {
+                positives.push(val);
+            }
+        }
+
+        let result = ktn(KJ as i32, positives.len() as i64);
+        for (i, &amp;val) in positives.iter().enumerate() {
+            kJ(result).add(i).write(val);
+        }
+
+        // x is owned by Q, we don't free it
+        // result will be returned to Q, which takes ownership
+        result
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>Memory bugs here won’t show up as Rust compilation errors — they’ll show up as kdb+ crashes or memory leaks. Write tests, use valgrind on Linux, and check your reference counts carefully.</p>
+<h2 id="connection-pooling"><a class="header" href="#connection-pooling">Connection Pooling</a></h2>
+<p>For high-throughput Rust services consuming kdb+ data, managing connections efficiently matters:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+
+struct QConnectionPool {
+    connections: Vec&lt;Arc&lt;Mutex&lt;QStream&gt;&gt;&gt;,
+    size: usize,
+    next: std::sync::atomic::AtomicUsize,
+}
+
+impl QConnectionPool {
+    async fn new(host: &amp;str, port: u16, auth: &amp;str, size: usize)
+        -&gt; Result&lt;Self, Box&lt;dyn std::error::Error&gt;&gt;
+    {
+        let mut connections = Vec::with_capacity(size);
+        for _ in 0..size {
+            let conn = QStream::connect(
+                ConnectionMethod::TCP, host, port, auth
+            ).await?;
+            connections.push(Arc::new(Mutex::new(conn)));
+        }
+        Ok(Self {
+            connections,
+            size,
+            next: std::sync::atomic::AtomicUsize::new(0),
+        })
+    }
+
+    fn get(&amp;self) -&gt; Arc&lt;Mutex&lt;QStream&gt;&gt; {
+        let idx = self.next.fetch_add(1, std::sync::atomic::Ordering::Relaxed) % self.size;
+        self.connections[idx].clone()
+    }
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let pool = Arc::new(
+        QConnectionPool::new("localhost", 5001, "", 4).await?
+    );
+
+    // Spawn concurrent queries
+    let mut handles = Vec::new();
+    for sym in &amp;["AAPL", "MSFT", "GOOG", "AMZN"] {
+        let pool = pool.clone();
+        let sym = sym.to_string();
+        let handle = tokio::spawn(async move {
+            let conn = pool.get();
+            let mut guard = conn.lock().await;
+            let query = format!("last select price from trade where sym=`{}", sym);
+            guard.send_sync_message(&amp;query.as_str()).await
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        let result = handle.await??;
+        println!("{}", result);
+    }
+
+    Ok(())
+}</code></pre>
+<h2 id="tls-connections"><a class="header" href="#tls-connections">TLS Connections</a></h2>
+<p>If your kdb+ process is behind a TLS-terminating proxy or configured with TLS directly:</p>
+<pre class="playground"><code class="language-rust">use kdbplus::ipc::*;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // TLS connection
+    let mut client = QStream::connect(
+        ConnectionMethod::TLS,
+        "myserver.example.com",
+        5001,
+        "user:pass"
+    ).await?;
+
+    let result = client.send_sync_message(&amp;"til 5").await?;
+    println!("{}", result);
+
+    Ok(())
+}</code></pre>
+<h2 id="when-to-use-ipc-vs-ffi"><a class="header" href="#when-to-use-ipc-vs-ffi">When to Use IPC vs FFI</a></h2>
+<p>Use <strong>IPC</strong> when:</p>
+<ul>
+<li>You have a running kdb+ process you want to query</li>
+<li>You’re building a service that consumes or publishes kdb+ data</li>
+<li>You want the kdb+ process to remain independently manageable</li>
+<li>You want Rust compilation errors instead of runtime crashes</li>
+</ul>
+<p>Use <strong>FFI</strong> when:</p>
+<ul>
+<li>You’re writing a kdb+ extension (<code>.so</code>/<code>.dylib</code> loaded with <code>2:</code>)</li>
+<li>You need zero-copy access to Q data structures</li>
+<li>You’re embedding a compute kernel that Q will call directly</li>
+<li>You genuinely enjoy reading about reference counting</li>
+</ul>
+<p>The IPC path is the more Rust-idiomatic one — clean separation, async-friendly, proper error types. The FFI path gives you more power and more ways to segfault. Start with IPC.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="r-and-q-statistical-power-meets-time-series-performance"><a class="header" href="#r-and-q-statistical-power-meets-time-series-performance">R and Q: Statistical Power Meets Time-Series Performance</a></h1>
+<p>The R-Q relationship is one of complementary strengths that coexist awkwardly. R is genuinely excellent at statistics, visualization, and the kind of exploratory analysis where you want twelve different regression models and a scatterplot matrix in thirty lines. Q is genuinely excellent at storing and querying large time-series datasets efficiently. Together, they cover a lot of ground. Separately, they each have a large blind spot.</p>
+<p>The practical question is: how do you get R talking to Q without it being painful?</p>
+<h2 id="the-options"><a class="header" href="#the-options">The Options</a></h2>
+<p><strong><code>rkdb</code></strong>: The most direct path. R package that connects to kdb+ via IPC. Wraps the C API. The one you want.</p>
+<p><strong><code>rqpython</code> / qPython bridge</strong>: Use Python as a middleman. Q → Python → R. Occasionally done in organizations that already have Python infrastructure. More moving parts than necessary if you just want R talking to Q.</p>
+<p><strong>Flat files / HDF5</strong>: Export from Q, import in R. Works. Terrible for anything real-time. Mentioned only to be dismissed.</p>
+<p>We’ll focus on <code>rkdb</code>. It’s the direct, performant option and the one that’s actually maintained.</p>
+<h2 id="rkdb-setup-and-connection"><a class="header" href="#rkdb-setup-and-connection">rkdb: Setup and Connection</a></h2>
+<pre><code class="language-r"># Install from CRAN (or GitHub for latest)
+install.packages("rkdb")
+# or
+devtools::install_github("KxSystems/rkdb")
+</code></pre>
+<p>Connecting to a kdb+ process:</p>
+<pre><code class="language-r">library(rkdb)
+
+# Open a connection
+h &lt;- open_connection("localhost", 5001)
+
+# Execute a q expression
+result &lt;- execute(h, "til 10")
+print(result)
+# [1] 0 1 2 3 4 5 6 7 8 9
+
+# Close when done
+close_connection(h)
+</code></pre>
+<p>Use a tryCatch block to ensure the connection is closed:</p>
+<pre><code class="language-r">library(rkdb)
+
+with_qconnection &lt;- function(host, port, expr) {
+  h &lt;- open_connection(host, port)
+  on.exit(close_connection(h))
+  expr(h)
+}
+
+# Usage
+result &lt;- with_qconnection("localhost", 5001, function(h) {
+  execute(h, "select from trade where date=2024.01.15")
+})
+</code></pre>
+<h2 id="type-mapping"><a class="header" href="#type-mapping">Type Mapping</a></h2>
+<p>Q types map to R types reasonably cleanly, with a few exceptions that matter:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Q type</th><th>R type</th></tr>
+</thead>
+<tbody>
+<tr><td>boolean</td><td>logical</td></tr>
+<tr><td>byte</td><td>raw</td></tr>
+<tr><td>short</td><td>integer</td></tr>
+<tr><td>int</td><td>integer</td></tr>
+<tr><td>long</td><td>numeric (R has no 64-bit int)</td></tr>
+<tr><td>real</td><td>numeric</td></tr>
+<tr><td>float</td><td>numeric</td></tr>
+<tr><td>char</td><td>character</td></tr>
+<tr><td>symbol</td><td>character</td></tr>
+<tr><td>timestamp</td><td>POSIXct</td></tr>
+<tr><td>date</td><td>Date</td></tr>
+<tr><td>time</td><td>difftime</td></tr>
+<tr><td>list</td><td>list</td></tr>
+<tr><td>table</td><td>data.frame</td></tr>
+<tr><td>dictionary</td><td>named list</td></tr>
+</tbody>
+</table>
+</div>
+<p>The important one: <strong>Q longs become R numerics</strong>. R’s integer type is 32-bit. Q’s long is 64-bit. Values up to 2^31 survive the conversion without issue; larger values lose precision silently. If you’re working with large integer IDs or nanosecond timestamps as integers, be aware of this.</p>
+<pre><code class="language-r">h &lt;- open_connection("localhost", 5001)
+
+# Q table → R data.frame (this is the good news)
+df &lt;- execute(h, "select date, sym, price, size from trade where date=2024.01.15")
+class(df)          # "data.frame"
+str(df)
+# 'data.frame':   1000 obs. of  4 variables:
+#  $ date : Date, format: "2024-01-15" ...
+#  $ sym  : chr  "AAPL" "AAPL" "MSFT" ...
+#  $ price: num  185.5 185.6 375.2 ...
+#  $ size : num  100 200 150 ...
+
+# Symbol columns come back as character vectors
+class(df$sym)      # "character"
+
+# Timestamp handling
+ts_data &lt;- execute(h, "select time from trade where date=2024.01.15, i&lt;5")
+class(ts_data$time)  # "POSIXct" "POSIXt"
+format(ts_data$time[1], "%H:%M:%OS6")  # "09:30:00.123456"
+
+close_connection(h)
+</code></pre>
+<h2 id="the-moment-doing-real-analysis"><a class="header" href="#the-moment-doing-real-analysis">The Moment: Doing Real Analysis</a></h2>
+<p>Here’s the pattern that makes the R-Q combination click — pull structured data from Q, do something R is uniquely good at, and optionally push results back.</p>
+<pre><code class="language-r">library(rkdb)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull a month of OHLC data from Q
+ohlc &lt;- execute(h, "
+  select
+    date,
+    open: first price,
+    high: max price,
+    low: min price,
+    close: last price,
+    volume: sum size
+  from trade
+  where
+    date within 2024.01.01 2024.01.31,
+    sym=`AAPL
+  by date
+")
+
+# That Q query runs in milliseconds on a properly splayed table.
+# Now R takes over.
+
+# Compute technical indicators in R
+ohlc &lt;- ohlc %&gt;%
+  arrange(date) %&gt;%
+  mutate(
+    # Simple moving averages
+    sma_5  = zoo::rollmean(close, 5,  fill = NA, align = "right"),
+    sma_20 = zoo::rollmean(close, 20, fill = NA, align = "right"),
+
+    # Daily return
+    ret = (close / lag(close)) - 1,
+
+    # Bollinger bands (20-day)
+    bb_mid  = sma_20,
+    bb_sd   = zoo::rollapply(close, 20, sd, fill = NA, align = "right"),
+    bb_upper = bb_mid + 2 * bb_sd,
+    bb_lower = bb_mid - 2 * bb_sd,
+
+    # RSI (14-day)
+    gain = pmax(ret, 0),
+    loss = pmax(-ret, 0),
+    avg_gain = zoo::rollmean(gain, 14, fill = NA, align = "right"),
+    avg_loss = zoo::rollmean(loss, 14, fill = NA, align = "right"),
+    rs = avg_gain / avg_loss,
+    rsi = 100 - (100 / (1 + rs))
+  )
+
+print(tail(ohlc %&gt;% select(date, close, sma_5, sma_20, rsi), 5))
+
+# Visualize
+ggplot(ohlc %&gt;% filter(!is.na(sma_20)), aes(x = date)) +
+  geom_ribbon(aes(ymin = bb_lower, ymax = bb_upper), fill = "steelblue", alpha = 0.2) +
+  geom_line(aes(y = close), color = "black") +
+  geom_line(aes(y = sma_20), color = "red", linetype = "dashed") +
+  labs(title = "AAPL: Price with Bollinger Bands (Jan 2024)",
+       y = "Price", x = NULL) +
+  theme_minimal()
+</code></pre>
+<h2 id="pushing-results-back-to-q"><a class="header" href="#pushing-results-back-to-q">Pushing Results Back to Q</a></h2>
+<p>Results computed in R can be inserted back into Q:</p>
+<pre><code class="language-r">library(rkdb)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Compute something in R
+set.seed(42)
+simulated_paths &lt;- data.frame(
+  t = 0:252,
+  path1 = cumsum(c(0, rnorm(252, 0.0003, 0.015))),
+  path2 = cumsum(c(0, rnorm(252, 0.0003, 0.015))),
+  path3 = cumsum(c(0, rnorm(252, 0.0003, 0.015)))
+)
+
+# Push back to Q
+# Note: execute() sends data; the second argument to `set` is the name
+execute(h, "set", "sim_paths", simulated_paths)
+
+# Verify
+n &lt;- execute(h, "count sim_paths")
+cat("Rows in Q:", n, "\n")  # 253
+</code></pre>
+<p>The type mapping on the way <em>in</em> can be fiddly. Data frames map to Q tables; R numerics map to Q floats; R integers map to Q ints. Factors will cause you grief — convert them to character first.</p>
+<h2 id="statistical-patterns-that-work-well"><a class="header" href="#statistical-patterns-that-work-well">Statistical Patterns That Work Well</a></h2>
+<h3 id="cross-sectional-factor-analysis"><a class="header" href="#cross-sectional-factor-analysis">Cross-Sectional Factor Analysis</a></h3>
+<pre><code class="language-r">library(rkdb)
+library(dplyr)
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull end-of-day prices for a universe of symbols
+eod &lt;- execute(h, "
+  select
+    date,
+    sym,
+    close: last price,
+    volume: sum size
+  from trade
+  where
+    date within 2023.01.01 2024.01.01,
+    sym in `AAPL`MSFT`GOOG`AMZN`META`NVDA`TSLA`JPM`BAC`GS
+  by date, sym
+")
+
+# Compute factor exposures
+eod &lt;- eod %&gt;%
+  group_by(sym) %&gt;%
+  arrange(date) %&gt;%
+  mutate(
+    ret_1d   = close / lag(close) - 1,
+    ret_5d   = close / lag(close, 5) - 1,
+    ret_21d  = close / lag(close, 21) - 1,
+    vol_21d  = zoo::rollapply(ret_1d, 21, sd, fill = NA, align = "right"),
+    vol_log  = log(volume),
+    momentum = ret_21d / vol_21d  # risk-adjusted momentum
+  ) %&gt;%
+  ungroup()
+
+# Cross-sectional z-score each factor
+eod &lt;- eod %&gt;%
+  group_by(date) %&gt;%
+  mutate(
+    z_momentum = scale(momentum)[,1],
+    z_vol_log  = scale(vol_log)[,1]
+  ) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(z_momentum))
+
+# IC (Information Coefficient) of momentum factor
+ic_by_date &lt;- eod %&gt;%
+  group_by(date) %&gt;%
+  summarise(
+    ic = cor(z_momentum, lead(ret_5d), use = "complete.obs", method = "spearman"),
+    .groups = "drop"
+  ) %&gt;%
+  filter(!is.na(ic))
+
+cat("Mean IC:", round(mean(ic_by_date$ic, na.rm = TRUE), 4), "\n")
+cat("IC IR:", round(mean(ic_by_date$ic, na.rm = TRUE) /
+                    sd(ic_by_date$ic, na.rm = TRUE), 4), "\n")
+</code></pre>
+<h3 id="cointegration-analysis"><a class="header" href="#cointegration-analysis">Cointegration Analysis</a></h3>
+<p>Q’s tick data is excellent for cointegration testing — pairs trading, spread analysis, that sort of thing:</p>
+<pre><code class="language-r">library(rkdb)
+library(urca)  # for Johansen cointegration test
+
+h &lt;- open_connection("localhost", 5001)
+on.exit(close_connection(h))
+
+# Pull synchronized mid prices for two instruments
+prices &lt;- execute(h, "
+  aj[`time`sym;
+    select time, sym:`SPY, mid:0.5*(bid+ask) from quotes where date=2024.01.15, sym=`SPY;
+    select time, sym:`IVV, mid:0.5*(bid+ask) from quotes where date=2024.01.15, sym=`IVV
+  ]
+")
+
+spy &lt;- prices$mid[prices$sym == "SPY"]
+ivv &lt;- prices$mid[prices$sym == "IVV"]
+
+# Engle-Granger cointegration test
+coint_reg &lt;- lm(spy ~ ivv)
+cat("Cointegration regression R²:", summary(coint_reg)$r.squared, "\n")
+
+# ADF test on residuals
+adf_result &lt;- ur.df(residuals(coint_reg), type = "drift", lags = 5)
+cat("ADF test statistic:", adf_result@teststat[1], "\n")
+cat("5% critical value:", adf_result@cval[1, 2], "\n")
+
+# Spread (basis)
+spread &lt;- spy - coef(coint_reg)[2] * ivv - coef(coint_reg)[1]
+cat("Spread mean:", round(mean(spread), 6), "\n")
+cat("Spread SD:", round(sd(spread), 6), "\n")
+cat("Current z-score:", round(tail(spread, 1) / sd(spread), 4), "\n")
+</code></pre>
+<h2 id="parameterized-queries"><a class="header" href="#parameterized-queries">Parameterized Queries</a></h2>
+<p>String interpolation for Q queries is fragile. Use the list-form execute when you need parameters:</p>
+<pre><code class="language-r"># Fragile: SQL injection-ish problems, quoting issues
+sym &lt;- "AAPL"
+bad_query &lt;- paste0("select from trade where sym=`", sym)
+execute(h, bad_query)  # works but ugly
+
+# Better: use execute with arguments
+# rkdb supports passing arguments after the function call
+result &lt;- execute(h, "{[s;d] select from trade where sym=s, date=d}",
+                  as.name("AAPL"),        # Q symbol
+                  as.Date("2024-01-15"))  # Q date
+
+# The as.name() trick converts R character to Q symbol
+# as.Date() converts R Date to Q date
+</code></pre>
+<h2 id="scheduling-and-automation"><a class="header" href="#scheduling-and-automation">Scheduling and Automation</a></h2>
+<p>For regular R → Q data pulls (end-of-day analytics, overnight batch jobs):</p>
+<pre><code class="language-r">library(rkdb)
+
+run_eod_analytics &lt;- function(date_str) {
+  h &lt;- open_connection("localhost", 5001)
+  on.exit(close_connection(h))
+
+  tryCatch({
+    # Pull data
+    data &lt;- execute(h, paste0(
+      "select from eod_summary where date=", date_str
+    ))
+
+    if (nrow(data) == 0) {
+      cat("No data for", date_str, "\n")
+      return(invisible(NULL))
+    }
+
+    # Run analytics
+    results &lt;- compute_factor_scores(data)
+
+    # Write back
+    execute(h, "set", "r_factor_scores", results)
+    execute(h, paste0("r_factor_scores: update date:", date_str,
+                      " from r_factor_scores"))
+
+    # Append to persistent table
+    execute(h, "`factor_scores upsert r_factor_scores")
+
+    cat("EOD analytics complete for", date_str, "\n")
+  }, error = function(e) {
+    cat("Error in EOD analytics:", conditionMessage(e), "\n")
+  })
+}
+
+# Run for today
+run_eod_analytics(format(Sys.Date(), "%Y.%m.%d"))
+</code></pre>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<p>Q will outperform R on any query over large datasets. R’s <code>data.frame</code> operations get slow past a few million rows; Q’s columnar storage and query engine handle billions of rows comfortably. The right division of labor is:</p>
+<ul>
+<li><strong>Filter and aggregate in Q</strong> (date ranges, symbol selection, OHLC, VWAP)</li>
+<li><strong>Analyze in R</strong> (regressions, factor models, rolling stats, visualization)</li>
+<li><strong>Write results back to Q</strong> (persist computed signals for the trading system)</li>
+</ul>
+<p>Don’t pull raw tick data into R and filter it there. Pull the Q-computed aggregates. Your laptop will thank you.</p>
+<p>A query like this runs in milliseconds in Q; the equivalent in R against a data.frame with 100M rows does not:</p>
+<pre><code class="language-q">/ Q: ~10ms on 100M row trade table
+select vwap: size wavg price by sym from trade where date=2024.01.15
+</code></pre>
+<pre><code class="language-r"># R equivalent: slow
+# trade_df %&gt;% group_by(sym) %&gt;% summarise(vwap = weighted.mean(price, size))
+# Much better: let Q do it, just receive the result in R
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="ide-support-what-actually-works-in-2026"><a class="header" href="#ide-support-what-actually-works-in-2026">IDE Support: What Actually Works in 2026</a></h1>
+<p>For most of Q’s history, the IDE situation was: use a text editor, run your code in the q REPL, repeat. This was not considered a problem because the alternative — the q IDE that shipped with older KX products — was not obviously better.</p>
+<p>The landscape has genuinely improved. There are now real options with real features: syntax highlighting, autocomplete, code navigation, debugging integration, and linters that tell you things you didn’t know you were doing wrong. This chapter covers what actually works, what sounds good in a README but doesn’t in practice, and the one setup that’s worth the configuration time.</p>
+<h2 id="vs-code-with-the-q-extension"><a class="header" href="#vs-code-with-the-q-extension">VS Code with the q Extension</a></h2>
+<p>The <code>kdb</code> extension from KX (marketplace ID: <code>KxSystems.kdb</code>) is the current best-in-class option. It’s actively maintained, it’s free, and it works.</p>
+<h3 id="installation-2"><a class="header" href="#installation-2">Installation</a></h3>
+<p>Install from the VS Code marketplace:</p>
+<pre><code>ext install KxSystems.kdb
+</code></pre>
+<p>Or from the command palette: <code>Extensions: Install Extensions</code> → search “kdb”.</p>
+<h3 id="what-you-get"><a class="header" href="#what-you-get">What You Get</a></h3>
+<p><strong>Syntax highlighting</strong>: Accurate Q syntax highlighting including functional forms, system commands, iterators. Not the “we colored the keywords” approach — it correctly handles Q’s context-dependent syntax.</p>
+<p><strong>Code completion</strong>: Autocomplete for built-in Q functions and operators. Less impressive for user-defined namespaces unless you’re connected to a running process (see below).</p>
+<p><strong>Live connection</strong>: The extension can connect to a running kdb+ process. With a live connection, you get:</p>
+<ul>
+<li>Execute selected code against the connected process (Cmd/Ctrl+Return)</li>
+<li>Q console output in VS Code’s output panel</li>
+<li>Variable completion from the connected process’s namespace</li>
+</ul>
+<p><strong>q scratch pad</strong>: Open a <code>.q</code> file, connect to a process, and evaluate expressions interactively. This is the workflow that replaces the REPL loop.</p>
+<h3 id="configuration"><a class="header" href="#configuration">Configuration</a></h3>
+<p>In your VS Code <code>settings.json</code>:</p>
+<pre><code class="language-json">{
+  "kdb.servers": [
+    {
+      "serverName": "dev",
+      "host": "localhost",
+      "port": 5001,
+      "auth": false,
+      "tls": false
+    },
+    {
+      "serverName": "prod",
+      "host": "prod-kdb.internal",
+      "port": 5001,
+      "auth": true,
+      "tls": true
+    }
+  ],
+  "kdb.defaultServer": "dev",
+  "kdb.hideSubscriptionWarning": false
+}
+</code></pre>
+<p>The server list appears in the KDB panel in the activity bar. Click to connect, right-click to set as default.</p>
+<h3 id="the-workflow-that-actually-works"><a class="header" href="#the-workflow-that-actually-works">The Workflow That Actually Works</a></h3>
+<p>The productive VS Code + Q workflow:</p>
+<ol>
+<li>Keep your <code>.q</code> source files open in the editor</li>
+<li>Connect to a local development q process</li>
+<li>Highlight a block and hit Cmd+Return to execute it</li>
+<li>Check results in the output panel or the Q console</li>
+<li>Iterate</li>
+</ol>
+<p>For namespace navigation: <code>Go to Definition</code> works for functions defined in the connected process. For functions defined in files you haven’t loaded yet, it falls back to text search.</p>
+<h3 id="debugging"><a class="header" href="#debugging">Debugging</a></h3>
+<p>The extension doesn’t yet support the Q debugger interactively (breakpoints, step-through). For debugging, you’re still using:</p>
+<pre><code class="language-q">/ Q's built-in debug mode when a function errors
+\e 1   / enable debug mode
+/ Then when a function errors, you're dropped into its context
+/ .z.ex contains the failing expression
+/ .z.ey contains the argument
+</code></pre>
+<p>Or the increasingly popular approach of extracting functions to test them in isolation rather than debugging in-place.</p>
+<h2 id="intellij--jetbrains-with-the-q-plugin"><a class="header" href="#intellij--jetbrains-with-the-q-plugin">IntelliJ / JetBrains with the Q Plugin</a></h2>
+<p>The <code>q4intellij</code> plugin provides Q support for IntelliJ IDEA and the JetBrains family. If your team is already JetBrains-based, this is worth considering.</p>
+<p>Install via JetBrains Marketplace: search “q language support” or “kdb+”.</p>
+<p>What you get:</p>
+<ul>
+<li>Syntax highlighting and formatting</li>
+<li>Structure view (namespace/function tree)</li>
+<li>Go to Definition for local code</li>
+<li>Remote REPL integration</li>
+</ul>
+<p>What you don’t get: the same depth of kdb+ integration as the KX VS Code extension. The KX extension benefits from being written by the language vendor.</p>
+<h2 id="emacs-and-vim-the-long-game"><a class="header" href="#emacs-and-vim-the-long-game">Emacs and Vim: The Long Game</a></h2>
+<p>Emacs has <code>q-mode</code>, maintained with the same level of enthusiasm you’d expect from Emacs maintainers (which is to say: it works, has been working for years, and the documentation is a README in a GitHub repo from 2014 that still applies).</p>
+<pre><code class="language-elisp">;; q-mode for Emacs
+;; Install via MELPA:
+(use-package q-mode
+  :ensure t
+  :mode "\\.q\\'"
+  :config
+  (setq q-host "localhost")
+  (setq q-port 5001))
+</code></pre>
+<p>With <code>q-mode</code>:</p>
+<ul>
+<li><code>C-c C-l</code>: Load current buffer into Q</li>
+<li><code>C-c C-r</code>: Send region to Q</li>
+<li><code>C-c C-z</code>: Open Q REPL</li>
+</ul>
+<p>Vim users have <code>vim-q</code>, which provides syntax highlighting and some REPL integration. If you’re already fluent in Vim, this keeps you in Vim. If you’re not, the VS Code extension is less friction.</p>
+<h2 id="notepad-and-sublime-text"><a class="header" href="#notepad-and-sublime-text">Notepad++ and Sublime Text</a></h2>
+<p>Both have syntax highlighting plugins that make Q code readable. Neither has REPL integration or anything beyond colorization. Useful for reading Q code on a machine where you haven’t installed a proper IDE; not a development workflow.</p>
+<h2 id="qstudio-the-dedicated-option"><a class="header" href="#qstudio-the-dedicated-option">qStudio: The Dedicated Option</a></h2>
+<p>qStudio (from timestored.com) is a dedicated kdb+/q IDE. It’s been around for a long time and has features the VS Code extension doesn’t:</p>
+<ul>
+<li><strong>Table viewer</strong>: Paginated, sortable display of Q tables — much better than reading raw console output</li>
+<li><strong>SQL-style query editor</strong>: Write Q queries with a GUI for table results</li>
+<li><strong>Charts</strong>: Built-in charting of Q result sets</li>
+<li><strong>Schema browser</strong>: Tree view of tables, functions, variables across connected processes</li>
+</ul>
+<p>Free version available with most features. Pro version adds more chart types and advanced features.</p>
+<p>The honest comparison: qStudio is better for <em>querying and exploring</em> kdb+ data interactively. VS Code with the KX extension is better for <em>developing and maintaining</em> Q code. Many teams use both — qStudio for ad hoc analysis, VS Code for the actual codebase.</p>
+<h2 id="jupyter-with-q"><a class="header" href="#jupyter-with-q">Jupyter with Q</a></h2>
+<p>If your team uses Jupyter heavily, there’s a kernel for Q:</p>
+<pre><code class="language-bash">pip install jupyterq
+# or via conda
+conda install -c kx jupyterq
+</code></pre>
+<p>This gives you Q code cells in Jupyter notebooks. Useful for:</p>
+<ul>
+<li>Exploratory analysis with Q + Python mixed in the same notebook</li>
+<li>Sharing Q analyses with colleagues who want a notebook interface</li>
+<li>Teaching Q in an interactive environment</li>
+</ul>
+<pre><code class="language-python"># In a Jupyter notebook cell — magic syntax after installing jupyterq
+%%q
+/ This is a Q cell
+select vwap: size wavg price by sym from trade where date=.z.d
+</code></pre>
+<p>The limitation: Jupyter’s model of discrete cell execution doesn’t map perfectly onto Q’s stateful, incremental development style. It works, but Q developers tend to find the Q REPL more natural for iteration.</p>
+<h2 id="the-recommended-setup"><a class="header" href="#the-recommended-setup">The Recommended Setup</a></h2>
+<p>For a developer who writes Q professionally:</p>
+<ol>
+<li>
+<p><strong>VS Code + KX extension</strong>: Primary development environment. Connected to a local q process. Use it for all code editing, namespace navigation, and interactive execution.</p>
+</li>
+<li>
+<p><strong>qStudio</strong>: For data exploration and ad hoc queries, especially when looking at large table results you want to sort/filter interactively.</p>
+</li>
+<li>
+<p><strong>Terminal Q REPL</strong>: Still useful for quick experiments and for running long-lived processes. The VS Code extension doesn’t replace the terminal q session; it complements it.</p>
+</li>
+<li>
+<p><strong>Git</strong>: Not an IDE feature, but: version control your Q code. <code>.q</code> and <code>.k</code> files belong in version control. The Q shop that doesn’t do this is the Q shop that loses code.</p>
+</li>
+</ol>
+<h2 id="linting-and-formatting"><a class="header" href="#linting-and-formatting">Linting and Formatting</a></h2>
+<p>The VS Code KX extension includes a linter (via <code>kdb-lsp</code>). It catches:</p>
+<ul>
+<li>Type errors it can detect statically</li>
+<li>Unused variables</li>
+<li>Shadowed names</li>
+<li>Style issues (inconsistent spacing, missing semicolons)</li>
+</ul>
+<p>For CI integration, <code>qls</code> (Q Language Server) can be run headlessly:</p>
+<pre><code class="language-bash"># Run linter in CI
+qls --check src/*.q
+</code></pre>
+<p>We’ll cover linting and tooling in depth in the <a href="#developer-tooling-linters-formatters-and-making-q-less-lonely">Developer Tooling</a> chapter.</p>
+<h2 id="a-note-on-color-themes"><a class="header" href="#a-note-on-color-themes">A Note on Color Themes</a></h2>
+<p>Q’s syntax is unusual enough that generic dark themes don’t highlight it well. The KX extension comes with Q-specific token colors; use them, or use a theme that supports custom token colors and add:</p>
+<pre><code class="language-json">// VS Code settings.json
+{
+  "editor.tokenColorCustomizations": {
+    "[One Dark Pro]": {
+      "textMateRules": [
+        {
+          "scope": "keyword.operator.q",
+          "settings": { "foreground": "#56B6C2" }
+        },
+        {
+          "scope": "entity.name.function.q",
+          "settings": { "foreground": "#61AFEF" }
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+<p>This is more optional than the preceding advice, but staring at poorly highlighted Q code for eight hours is an unforced error.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="web-frameworks-and-q-serving-data-to-the-outside-world"><a class="header" href="#web-frameworks-and-q-serving-data-to-the-outside-world">Web Frameworks and Q: Serving Data to the Outside World</a></h1>
+<p>Q has a built-in HTTP server. This is both better and worse than you expect.</p>
+<p>It’s better because it works, it’s fast, and it’s already running alongside your q process with a one-line configuration change. It’s worse because it’s not a web framework — it’s a raw HTTP server with a callback, and if you want routing, middleware, authentication, JSON serialization, and all the other things a real web framework provides, you’re either building them or wrapping q with something external.</p>
+<p>The two viable approaches:</p>
+<ol>
+<li><strong>q’s built-in HTTP server</strong>: Minimal, fast, good for simple APIs and dashboards. Surprisingly capable when you understand how it works.</li>
+<li><strong>External web framework wrapping q via IPC</strong>: Python (FastAPI), Node.js, Go — your choice — sits in front of kdb+ and translates HTTP requests to IPC calls. More operational overhead, much more flexibility.</li>
+</ol>
+<h2 id="qs-built-in-http-server"><a class="header" href="#qs-built-in-http-server">Q’s Built-In HTTP Server</a></h2>
+<p>Start q with a port and it also accepts HTTP:</p>
+<pre><code class="language-bash">q -p 5001
+</code></pre>
+<p>That’s it. The process now accepts both Q IPC connections and HTTP requests on the same port. An HTTP GET to <code>localhost:5001?query=2+2</code> returns… something. By default it returns Q’s text representation, which is approximately useful.</p>
+<h3 id="the-zph-handler"><a class="header" href="#the-zph-handler">The <code>.z.ph</code> Handler</a></h3>
+<p><code>.z.ph</code> is the HTTP GET handler. It receives the raw query string and returns whatever you give it:</p>
+<pre><code class="language-q">/ Default .z.ph strips the query and evaluates it
+/ (this is the built-in behavior, not something you write)
+
+/ Override with your own handler
+.z.ph: {[x]
+    / x is the raw HTTP request as a string
+    / Parse the query parameter
+    qry: .h.mp x;          / parse into a dict of params
+
+    / Execute if a 'q' parameter is present
+    result: $["q" in key qry;
+        .Q.s value qry`q;  / evaluate and format
+        "No query parameter"];
+
+    / Return HTTP response
+    "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n", result
+    }
+</code></pre>
+<h3 id="serving-json"><a class="header" href="#serving-json">Serving JSON</a></h3>
+<p>The moment where this becomes actually useful — returning JSON for real API consumers:</p>
+<pre><code class="language-q">/ JSON serialization/deserialization (built-in since kdb+ 3.x)
+.j.j   / serialize to JSON
+.j.k   / deserialize from JSON
+
+/ Simple JSON API endpoint
+.z.ph: {[x]
+    / Parse query parameters
+    params: .h.mp x;
+
+    / Route based on 'endpoint' parameter
+    response: $[
+        "endpoint" in key params;
+        handleRequest params;
+        "404 Not Found"
+    ];
+
+    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n",
+    .j.j response
+    }
+
+handleRequest: {[params]
+    ep: params`endpoint;
+    $[ep ~ "trades";   getTrades params;
+      ep ~ "quotes";   getQuotes params;
+      ep ~ "summary";  getSummary params;
+      (`error; "Unknown endpoint")]
+    }
+
+getTrades: {[params]
+    sym: `$params`sym;
+    dt: "D"$params`date;
+    select time, sym, price, size
+    from trade
+    where date=dt, sym=sym
+    }
+</code></pre>
+<p>Test with curl:</p>
+<pre><code class="language-bash">curl "http://localhost:5001?endpoint=trades&amp;sym=AAPL&amp;date=2024.01.15"
+</code></pre>
+<h3 id="post-handler-and-zpp"><a class="header" href="#post-handler-and-zpp">POST Handler and <code>.z.pp</code></a></h3>
+<p>For POST requests with JSON bodies:</p>
+<pre><code class="language-q">.z.pp: {[x]
+    / x contains the HTTP headers and body
+    / Parse the JSON body
+    body: .j.k last "\r\n\r\n" vs x;
+
+    / Handle the request
+    result: processPost body;
+
+    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n",
+    .j.j result
+    }
+
+processPost: {[body]
+    / body is now a Q dictionary
+    $[`action in key body;
+        executeAction body;
+        `error`message!("missing_field"; "action is required")]
+    }
+
+executeAction: {[body]
+    action: body`action;
+    $[action ~ "insert";   insertRecord body;
+      action ~ "delete";   deleteRecord body;
+      `error`message!("unknown_action"; action)]
+    }
+</code></pre>
+<h3 id="a-real-example-ohlc-api"><a class="header" href="#a-real-example-ohlc-api">A Real Example: OHLC API</a></h3>
+<pre><code class="language-q">/ OHLC data API — the kind of thing a dashboard or charting library calls
+
+.z.ph: {[x]
+    params: .h.mp x;
+
+    result: @[handleApi; params; {[e] `status`error!("error"; string e)}];
+
+    headers: "HTTP/1.1 200 OK\r\n";
+    headers,: "Content-Type: application/json\r\n";
+    headers,: "Access-Control-Allow-Origin: *\r\n\r\n";
+
+    headers, .j.j result
+    }
+
+handleApi: {[params]
+    / Validate required parameters
+    required: `sym`date;
+    missing: required where not required in key params;
+    if[count missing; '"missing parameters: ", " " sv string missing];
+
+    sym:  `$params`sym;
+    dt:   "D"$params`date;
+    bins: `long$@[value; `$"$[`bins in key params; params`bins; "78"]; 78];
+
+    / OHLC in time buckets
+    ohlc: select
+        open:  first price,
+        high:  max price,
+        low:   min price,
+        close: last price,
+        volume: sum size,
+        vwap:  size wavg price
+    from trade
+    where date=dt, sym=sym
+    by time: bins xbar time.minute;
+
+    / Convert to list-of-records for JSON
+    `sym`date`bars!(sym; dt; flip ohlc)
+    }
+</code></pre>
+<p>Calling this from JavaScript:</p>
+<pre><code class="language-javascript">const response = await fetch(
+  'http://localhost:5001?sym=AAPL&amp;date=2024.01.15&amp;bins=30'
+);
+const data = await response.json();
+// data.bars contains {time: [...], open: [...], high: [...], ...}
+</code></pre>
+<h3 id="embedded-html-dashboard"><a class="header" href="#embedded-html-dashboard">Embedded HTML Dashboard</a></h3>
+<p>q can serve HTML directly. The <code>.h</code> namespace has utilities for generating HTML tables:</p>
+<pre><code class="language-q">.z.ph: {[x]
+    params: .h.mp x;
+
+    $["page" in key params;
+        servePage params`page;
+        serveIndex[]
+    ]}
+
+serveIndex: {
+    html: "&lt;html&gt;&lt;body&gt;";
+    html,: "&lt;h1&gt;kdb+ Dashboard&lt;/h1&gt;";
+    html,: "&lt;p&gt;&lt;a href='?page=trades'&gt;Trades&lt;/a&gt; | ";
+    html,: "&lt;a href='?page=summary'&gt;Summary&lt;/a&gt;&lt;/p&gt;";
+    html,: "&lt;/body&gt;&lt;/html&gt;";
+    "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n", html
+    }
+
+servePage: {[page]
+    data: $[page ~ "trades";
+        select[-100] from trade where date=.z.d;
+        page ~ "summary";
+        select last price, sum size by sym from trade where date=.z.d;
+        ([]) "Unknown page"];
+
+    html: "&lt;html&gt;&lt;body&gt;", .h.hb[`p; page], .h.htc[`table; .h.ht data], "&lt;/body&gt;&lt;/html&gt;";
+    "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n", html
+    }
+</code></pre>
+<p><code>.h.ht</code> renders a Q table as an HTML table. It’s not beautiful but it works and it’s one function call.</p>
+<h2 id="fastapi-as-a-gateway"><a class="header" href="#fastapi-as-a-gateway">FastAPI as a Gateway</a></h2>
+<p>For production APIs with real requirements (authentication, rate limiting, request validation, proper error handling), put a Python FastAPI server in front of kdb+:</p>
+<pre><code>Client → FastAPI → kdb+ (IPC)
+</code></pre>
+<p>The FastAPI layer handles HTTP concerns; kdb+ handles data concerns.</p>
+<pre><code class="language-python"># gateway.py
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+from typing import Optional
+import pykx as kx
+from datetime import date
+import os
+
+# Connection pool (simplified)
+q_connections = []
+Q_HOST = os.getenv("KDB_HOST", "localhost")
+Q_PORT = int(os.getenv("KDB_PORT", "5001"))
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: create connections
+    for _ in range(4):
+        conn = kx.SyncQConnection(host=Q_HOST, port=Q_PORT)
+        q_connections.append(conn)
+    yield
+    # Shutdown: close connections
+    for conn in q_connections:
+        conn.close()
+
+app = FastAPI(
+    title="kdb+ Gateway API",
+    description="REST API for kdb+ time-series data",
+    lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+
+def get_q():
+    """Round-robin connection from pool."""
+    import random
+    return random.choice(q_connections)
+
+@app.get("/trades")
+async def get_trades(
+    sym: str = Query(..., description="Symbol, e.g. AAPL"),
+    date: date = Query(..., description="Date in YYYY-MM-DD format"),
+    limit: int = Query(1000, ge=1, le=10000)
+):
+    """Get trades for a symbol on a date."""
+    q = get_q()
+    try:
+        result = q(
+            "{[s;d;n] select[-n] time, sym, price, size from trade where date=d, sym=s}",
+            kx.SymbolAtom(sym),
+            kx.DateAtom(date),
+            kx.LongAtom(limit)
+        )
+        return result.pd().to_dict(orient="records")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/ohlc")
+async def get_ohlc(
+    sym: str = Query(..., description="Symbol"),
+    date: date = Query(..., description="Date"),
+    bins: int = Query(30, ge=1, le=390, description="Minutes per bar")
+):
+    """Get OHLC bars for a symbol."""
+    q = get_q()
+    try:
+        result = q(
+            """{[s;d;b]
+                select
+                    open:  first price,
+                    high:  max price,
+                    low:   min price,
+                    close: last price,
+                    volume: sum size,
+                    vwap:  size wavg price
+                from trade
+                where date=d, sym=s
+                by time: b xbar time.minute
+            }""",
+            kx.SymbolAtom(sym),
+            kx.DateAtom(date),
+            kx.LongAtom(bins)
+        )
+        df = result.pd()
+        df.index = df.index.astype(str)  # serialize time index
+        return df.reset_index().to_dict(orient="records")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/symbols")
+async def get_symbols():
+    """List available symbols."""
+    q = get_q()
+    try:
+        syms = q("exec distinct sym from trade where date=.z.d")
+        return {"symbols": [str(s) for s in syms.py()]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health():
+    """Health check — also tests kdb+ connectivity."""
+    q = get_q()
+    try:
+        result = q("1b")
+        return {"status": "ok", "kdb_connected": bool(result.py())}
+    except Exception as e:
+        return {"status": "degraded", "error": str(e)}
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">pip install fastapi uvicorn pykx
+uvicorn gateway:app --host 0.0.0.0 --port 8000 --workers 4
+</code></pre>
+<p>Test:</p>
+<pre><code class="language-bash">curl "http://localhost:8000/trades?sym=AAPL&amp;date=2024-01-15"
+curl "http://localhost:8000/ohlc?sym=AAPL&amp;date=2024-01-15&amp;bins=30"
+curl "http://localhost:8000/symbols"
+</code></pre>
+<p>And you get automatic OpenAPI docs at <code>http://localhost:8000/docs</code>.</p>
+<h2 id="nodejs-the-web-frontends-native-gateway"><a class="header" href="#nodejs-the-web-frontends-native-gateway">Node.js: The Web Frontend’s Native Gateway</a></h2>
+<p>If your consumers are JavaScript applications, Node.js as the gateway makes the data pipeline feel native:</p>
+<pre><code class="language-javascript">// gateway.js
+import express from 'express';
+import { connect } from 'node-q';
+import { promisify } from 'util';
+
+const app = express();
+
+// Create kdb+ connection pool
+async function createConnection() {
+  return new Promise((resolve, reject) =&gt; {
+    const conn = connect({host: 'localhost', port: 5001});
+    conn.on('connect', () =&gt; resolve(conn));
+    conn.on('error', reject);
+  });
+}
+
+let qConn;
+(async () =&gt; {
+  qConn = await createConnection();
+  console.log('Connected to kdb+');
+})();
+
+function executeQ(query, ...args) {
+  return new Promise((resolve, reject) =&gt; {
+    qConn.k(query, ...args, (err, result) =&gt; {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  });
+}
+
+app.get('/trades', async (req, res) =&gt; {
+  const { sym, date } = req.query;
+  if (!sym || !date) {
+    return res.status(400).json({error: 'sym and date are required'});
+  }
+
+  try {
+    const result = await executeQ(
+      '{[s;d] select time, sym, price, size from trade where date=d, sym=s}',
+      sym, new Date(date)
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
+});
+
+app.listen(3000, () =&gt; console.log('Gateway on port 3000'));
+</code></pre>
+<h2 id="choosing-your-approach"><a class="header" href="#choosing-your-approach">Choosing Your Approach</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Approach</th><th>Use when</th></tr>
+</thead>
+<tbody>
+<tr><td>q built-in HTTP</td><td>Simple dashboards, internal tooling, prototypes</td></tr>
+<tr><td>FastAPI gateway</td><td>External APIs, need authentication/validation, Python team</td></tr>
+<tr><td>Node.js gateway</td><td>Primary consumers are web apps, team is JS-native</td></tr>
+<tr><td>Go gateway</td><td>High-throughput proxy, multiple downstream kdb+ processes</td></tr>
+</tbody>
+</table>
+</div>
+<p>The q built-in HTTP server is underrated for internal tooling — the zero-infrastructure story is real. For anything customer-facing or requiring proper auth, put a real web framework in front.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="q-ipc-deep-dive-the-protocol-the-patterns-and-the-pitfalls"><a class="header" href="#q-ipc-deep-dive-the-protocol-the-patterns-and-the-pitfalls">Q IPC Deep Dive: The Protocol, the Patterns, and the Pitfalls</a></h1>
+<p>The IPC protocol is the foundation everything in this book rests on. Every library we’ve discussed — qPython, pykx, kdbplus for Rust, rkdb for R — is ultimately speaking this protocol. Understanding it once means you can debug integration issues at the wire level, write your own client in any language, and understand why certain patterns are faster or safer than others.</p>
+<h2 id="the-wire-protocol"><a class="header" href="#the-wire-protocol">The Wire Protocol</a></h2>
+<p>Q’s IPC uses a simple binary protocol over TCP. A message has a fixed 8-byte header followed by a serialized Q value.</p>
+<h3 id="header-structure"><a class="header" href="#header-structure">Header Structure</a></h3>
+<pre><code>Byte 0: Endianness (0x01 = little-endian, 0x00 = big-endian)
+Byte 1: Message type
+         0x00 = async (fire and forget)
+         0x01 = sync (request, expects response)
+         0x02 = response (reply to sync request)
+Byte 2: Compression flag (0x01 if body is compressed)
+Byte 3: Reserved (0x00)
+Bytes 4-7: Total message length (little-endian int32, includes header)
+</code></pre>
+<p>After the header: serialized Q data in KDB’s internal binary format.</p>
+<p>You can observe this with a raw TCP dump:</p>
+<pre><code class="language-bash"># Start q on port 5001, connect with nc, and observe the handshake
+# (The connection handshake sends/receives capability strings)
+</code></pre>
+<p>Or from Q itself, capture the raw bytes:</p>
+<pre><code class="language-q">/ Serialize a Q value to bytes
+-8! 42              / integer 42 as byte sequence
+/ Result: 0x0100000009000000fa2a000000
+
+/ Deserialize
+-9! 0x0100000009000000fa2a000000
+/ Result: 42
+</code></pre>
+<p>The <code>-8!</code> (serialize) and <code>-9!</code> (deserialize) system functions are your wire-format debugging tools. Every Q value has a deterministic binary representation.</p>
+<h3 id="serialization-format"><a class="header" href="#serialization-format">Serialization Format</a></h3>
+<pre><code class="language-q">/ See the raw bytes of various types
+-8! 3.14            / float: 0x010000000d000000070182d497855e0940
+-8! `hello          / symbol: 0x01000000100000000568656c6c6f00
+-8! "hello"         / char list: 0x010000000e00000006000500000068656c6c6f
+-8! 1 2 3           / long list: 0x010000001800000006000300000001000000000000000200000000000000...
+-8! ([] a:1 2; b:`x`y)  / table
+</code></pre>
+<p>Type bytes: <code>0x01</code> = boolean, <code>0x04</code> = byte, <code>0x05</code> = short, <code>0x06</code> = int, <code>0x07</code> = long, <code>0x08</code> = real, <code>0x09</code> = float, <code>0x0a</code> = char, <code>0x0b</code> = symbol. Negative values (<code>0xfb</code>, <code>0xfc</code>…) are atom equivalents of the corresponding list types.</p>
+<p>You don’t need to implement this by hand (the libraries do it), but knowing it exists means you can debug with Wireshark or <code>tcpdump</code> when something goes wrong.</p>
+<h2 id="handles-and-connection-lifecycle"><a class="header" href="#handles-and-connection-lifecycle">Handles and Connection Lifecycle</a></h2>
+<pre><code class="language-q">/ Opening a handle
+h: hopen `::5001          / localhost:5001, no auth
+h: hopen `::5001:user:pass / with auth
+h: hopen (`:myserver; 5001; "user:pass"; 10000)  / with timeout (ms)
+
+/ Check handle type
+type h    / -7h = int handle
+
+/ Send synchronous message (blocking)
+result: h "select count from trade where date=.z.d"
+
+/ Send asynchronous message (non-blocking, no response)
+neg[h] "slow_background_task[]"
+
+/ Close
+hclose h
+
+/ Check if handle is open
+.z.W    / dictionary of open handles -&gt; their send buffer size
+h in key .z.W  / true if h is open
+</code></pre>
+<h3 id="timeouts"><a class="header" href="#timeouts">Timeouts</a></h3>
+<p>Q’s default IPC has no timeout — a hung remote process will block your q process indefinitely. For production code, always use timeout:</p>
+<pre><code class="language-q">/ Synchronous call with timeout (kdb+ 4.1+)
+h: hopen (`:server; 5001; ""; 5000)   / 5 second connect timeout
+
+/ Per-query timeout using .Q.trp
+.Q.trp[{h "slow_query[]"}; (); {[err] 'err}]
+
+/ Or with system-level timeout control
+system "T 30"   / set 30 second IPC timeout globally (not recommended)
+</code></pre>
+<p>The timeout on <code>hopen</code> is a connection timeout, not a query timeout. For query timeouts, you need either a gateway that enforces them or the async pattern described below.</p>
+<h2 id="synchronous-vs-asynchronous-the-key-trade-off"><a class="header" href="#synchronous-vs-asynchronous-the-key-trade-off">Synchronous vs Asynchronous: The Key Trade-off</a></h2>
+<h3 id="synchronous-default"><a class="header" href="#synchronous-default">Synchronous (Default)</a></h3>
+<pre><code class="language-q">/ Client sends query, blocks until response
+result: h "count trade"
+/ h is blocked during query execution — can't send another query on this handle
+</code></pre>
+<p>Simple, safe, familiar. The bottleneck: one outstanding request per handle. For high-throughput scenarios, you need either multiple handles or the async pattern.</p>
+<h3 id="asynchronous-fire-and-forget"><a class="header" href="#asynchronous-fire-and-forget">Asynchronous (Fire-and-Forget)</a></h3>
+<pre><code class="language-q">/ Client sends message, returns immediately, no response
+neg[h] ".u.upd[`trade; data]"
+</code></pre>
+<p>Used by tickerplants to publish updates to subscribers. Very fast — no round-trip. But: if the message errors on the server, you’ll never know. Use for pub/sub and logging, not for queries that need results.</p>
+<h3 id="async-with-callback-the-advanced-pattern"><a class="header" href="#async-with-callback-the-advanced-pattern">Async with Callback (The Advanced Pattern)</a></h3>
+<p>kdb+ 4.1 introduced deferred sync, which gives you async queries that still get responses:</p>
+<pre><code class="language-q">/ Server-side setup: handle the deferred callback
+.z.ps: {[x]
+    / x is the incoming async message
+    / For deferred sync, x is (neg handle; function; args)
+    if[10h = type x;
+        / This is a string eval, just execute
+        @[value; x; {[e] 'e}];
+        :()
+    ];
+    / Deferred pattern: (response_handle; function; args)
+    if[99h = type x;
+        h: neg x 0;           / response handle
+        fn: x 1;              / function
+        args: x 2;            / arguments
+        result: @[fn; args; {[e] 'e}];
+        h result;             / send result back asynchronously
+        :()
+    ]
+    }
+
+/ Client-side: send async, receive via .z.ps on client
+/ The client becomes a listener too
+.z.ps: {[x] show x}   / client's async handler
+
+/ Send deferred request:
+neg[h] (neg[.z.w]; `myFunction; (`AAPL; 2024.01.15))
+/ The server calls myFunction, sends result back to client async
+</code></pre>
+<p>This is how you build non-blocking, high-throughput query patterns. The complication is that your client now needs a message loop.</p>
+<h2 id="gateway-patterns"><a class="header" href="#gateway-patterns">Gateway Patterns</a></h2>
+<p>A gateway is a q process that sits in front of other q processes — routing queries, merging results, managing permissions. The canonical gateway patterns:</p>
+<h3 id="simple-synchronous-gateway"><a class="header" href="#simple-synchronous-gateway">Simple Synchronous Gateway</a></h3>
+<pre><code class="language-q">/ gateway.q
+\p 5000
+
+/ Backend connections
+backends: `hdb`rdb!5001 5002;
+handles: hopen each `::/:' string backends;
+
+/ Route queries to appropriate backend
+route: {[query]
+    / Simple routing: queries mentioning historical tables → hdb
+    $["hdb" in query;
+        handles`hdb;
+        handles`rdb] "\"", query, "\""
+    }
+
+/ Query handler
+.z.pg: {[x]
+    h: route x;
+    h x  / forward and return result
+    }
+</code></pre>
+<h3 id="scatter-gather-fan-out-across-partitions"><a class="header" href="#scatter-gather-fan-out-across-partitions">Scatter-Gather: Fan-Out Across Partitions</a></h3>
+<p>The pattern for querying across multiple kdb+ processes and merging results:</p>
+<pre><code class="language-q">/ Query multiple processes, merge results
+scatterQuery: {[handles; query]
+    / Send async to all, collect responses
+    results: handles @\: query;
+    / Merge (appropriate for tables)
+    raze results
+    }
+
+/ Example with multiple date-partitioned HDB processes
+hdb_handles: `::5001`::5002`::5003;  / each has different date ranges
+h1: hopen `::5001;
+h2: hopen `::5002;
+h3: hopen `::5003;
+
+merged: raze {h "select from trade where date=.z.d"} each (h1; h2; h3)
+</code></pre>
+<p>For true parallel execution, use the async pattern:</p>
+<pre><code class="language-q">/ Fan-out asynchronously
+fanOut: {[handles; query]
+    / Send to all without waiting
+    neg[handles] @\: query;
+
+    / Collect responses
+    results: ();
+    do[count handles;
+        results,: enlist .z.ps[]  / wait for each response
+    ];
+
+    raze results
+    }
+</code></pre>
+<h3 id="protected-evaluation"><a class="header" href="#protected-evaluation">Protected Evaluation</a></h3>
+<p>Always wrap remote execution in protected eval to prevent server crashes from propagating:</p>
+<pre><code class="language-q">/ Server-side: protect query execution
+.z.pg: {[x]
+    / Protected execution
+    result: @[value; x; {[err] (`error; err)}];
+
+    / Check if error
+    $[(`error ~ type result) and 2 = count result;
+        '"remote error: ", string result 1;
+        result]
+    }
+</code></pre>
+<p>The <code>@[f; args; err_handler]</code> pattern is Q’s try-catch. Use it on any query that comes from an external source.</p>
+<h2 id="message-handlers-the-full-set"><a class="header" href="#message-handlers-the-full-set">Message Handlers: The Full Set</a></h2>
+<p>These are the callbacks Q calls when IPC events occur:</p>
+<pre><code class="language-q">.z.pg    / synchronous GET handler (client sent sync message)
+.z.ps    / asynchronous message handler (client sent async message)
+.z.ph    / HTTP GET handler
+.z.pp    / HTTP POST handler
+.z.pw    / authentication handler — return 1b to allow, 0b to deny
+.z.po    / open handler — called when a handle is opened
+.z.pc    / close handler — called when a handle is closed
+.z.wo    / websocket open handler
+.z.wc    / websocket close handler
+.z.ws    / websocket message handler
+</code></pre>
+<h3 id="connection-tracking"><a class="header" href="#connection-tracking">Connection Tracking</a></h3>
+<pre><code class="language-q">/ Track active connections
+conns: ([handle: `long$()] host: `(); user: `(); opened: `timestamp$())
+
+.z.po: {[h]
+    / h is the new handle
+    `conns upsert (h; .z.a; .z.u; .z.p)
+    }
+
+.z.pc: {[h]
+    / h is the closing handle
+    delete from `conns where handle=h
+    }
+
+/ See who's connected
+conns
+/ handle | host        user  opened
+/ -------+-----------------------------------------
+/ 8      | 127.0.0.1   alice 2024.01.15T09:30:01
+/ 9      | 10.0.0.1    bob   2024.01.15T09:30:15
+</code></pre>
+<h3 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h3>
+<pre><code class="language-q">/ .z.pw: called on connection attempt
+/ Arguments: username (symbol), password (string/symbol)
+/ Return: 1b to allow, 0b to deny
+
+/ Simple user/password table
+users: ([ user:`alice`bob`readonly]
+         pass:("secret1"; "secret2"; "readpass");
+         perms:`admin`admin`read)
+
+.z.pw: {[user; pass]
+    $[user in key users;
+        pass ~ users[user; `pass];
+        0b]
+    }
+
+/ Role-based: store role in connection handle metadata
+.z.pg: {[x]
+    / Check permission for this user's role
+    user: .z.u;
+    role: $[user in key users; users[user; `perms]; `none];
+
+    / Block write operations for read-only users
+    if[role ~ `read;
+        if[any x like/: ("insert*"; "delete*"; "update*"; "*upsert*");
+            '"permission denied"]
+    ];
+
+    value x
+    }
+</code></pre>
+<h2 id="compression"><a class="header" href="#compression">Compression</a></h2>
+<p>For large result sets, Q can compress IPC messages:</p>
+<pre><code class="language-q">/ Enable compression for this connection (server-side)
+/ Set compression level for outgoing messages
+h set `compression`level!(1b; 6)  / zlib compression, level 6
+
+/ Or configure globally
+.z.pg: {[x]
+    result: value x;
+    / Compress results larger than 100KB
+    $[-1000000 &lt; type result;
+        result;  / small result, no compression
+        -19! result]  / compress
+    }
+</code></pre>
+<p>Compression makes sense for large tables sent over WAN. For intranet queries, the CPU cost often outweighs the bandwidth saving.</p>
+<h2 id="common-pitfalls"><a class="header" href="#common-pitfalls">Common Pitfalls</a></h2>
+<h3 id="the-blocking-handle-problem"><a class="header" href="#the-blocking-handle-problem">The Blocking Handle Problem</a></h3>
+<pre><code class="language-q">/ Wrong: using one handle for high-frequency queries
+/ This serializes all requests
+h: hopen `::5001
+do[1000; result: h "expensive_query[]"]
+
+/ Right: connection pool or async pattern
+/ Multiple handles, round-robin
+handles: hopen each 1000 # `::5001
+idx: 0
+getHandle: {handles idx mod: count handles; idx+:1; handles idx-1}
+</code></pre>
+<h3 id="message-size-limits"><a class="header" href="#message-size-limits">Message Size Limits</a></h3>
+<p>Q has a default message size limit of 2GB. For very large result sets, either:</p>
+<ul>
+<li>Paginate in Q: <code>select[-1000]</code> gets last 1000 rows; <code>select[1000;offset]</code> for pagination</li>
+<li>Stream results in chunks</li>
+<li>Compress the message</li>
+</ul>
+<h3 id="handle-leaks"><a class="header" href="#handle-leaks">Handle Leaks</a></h3>
+<p>Forgetting to close handles is a slow resource leak:</p>
+<pre><code class="language-q">/ Dangerous: handle opened but may not be closed on error
+result: (hopen `::5001) "query"
+/ If query errors, handle stays open
+
+/ Safe pattern
+safeQuery: {[host; port; query]
+    h: hopen (host; port; ""; 5000);
+    result: @[h; query; {[h; e] hclose h; 'e}[h]];
+    hclose h;
+    result
+    }
+</code></pre>
+<h3 id="endianness"><a class="header" href="#endianness">Endianness</a></h3>
+<p>Q handles endianness negotiation automatically during the connection handshake. You don’t need to worry about it unless you’re implementing the protocol from scratch — at which point you need to read the KX documentation on the wire format carefully. Most people are not doing this.</p>
+<h2 id="debugging-ipc-issues"><a class="header" href="#debugging-ipc-issues">Debugging IPC Issues</a></h2>
+<pre><code class="language-q">/ See all open handles
+.z.W    / dict: handle -&gt; buffer size
+
+/ Handle information
+h       / just the integer
+-1000 * h  / this is a trick: negative handle for async
+type h  / should be -7h
+
+/ Test connectivity without a real query
+h "1b"  / returns 1b on success, errors on failure
+
+/ Check what's waiting in the send buffer
+.z.W h  / bytes waiting to be sent on handle h
+
+/ Connection details about the *current* caller
+.z.a    / caller's IP address (within .z.pg / .z.ph)
+.z.u    / caller's username
+.z.w    / caller's handle (use neg[.z.w] to respond async)
+</code></pre>
+<p>For deep debugging, start q with verbose logging:</p>
+<pre><code class="language-bash">q -p 5001 -t 1000 2&gt;&amp;1 | tee q.log
+</code></pre>
+<p>The <code>-t</code> flag enables timer callbacks; the combined output to a log file gives you a timestamped record of messages and errors.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="rest-and-q-building-apis-around-kdbq"><a class="header" href="#rest-and-q-building-apis-around-kdbq">REST and Q: Building APIs Around kdb+/q</a></h1>
+<p>Most systems that need kdb+ data don’t speak kdb+ IPC. They speak HTTP. Your data science team wants a REST endpoint they can call from pandas. Your mobile app team wants JSON. The compliance system wants a webhook. None of these are going to implement the Q wire protocol.</p>
+<p>This chapter is about building REST APIs that sit in front of kdb+ — properly, with authentication, error handling, sensible data types, and the kind of response format that doesn’t make your consumers write adapter code.</p>
+<h2 id="the-architecture-decision"><a class="header" href="#the-architecture-decision">The Architecture Decision</a></h2>
+<p>Three viable approaches, each with a distinct trade-off:</p>
+<p><strong>1. Q’s built-in HTTP (<code>.z.ph</code>/<code>.z.pp</code>)</strong></p>
+<ul>
+<li>Zero infrastructure: it’s already running</li>
+<li>Good for internal tooling and simple cases</li>
+<li>Manual JSON serialization, no framework features</li>
+<li>Covered in the <a href="#web-frameworks-and-q-serving-data-to-the-outside-world">Web Frameworks chapter</a></li>
+</ul>
+<p><strong>2. External gateway (FastAPI, Flask, Go, Node.js)</strong></p>
+<ul>
+<li>Full web framework features: routing, middleware, validation, auth</li>
+<li>Proper OpenAPI/Swagger docs</li>
+<li>Separation of concerns: q does data, web framework does HTTP</li>
+<li>The right choice for external-facing APIs</li>
+</ul>
+<p><strong>3. KX Insights / KX Dashboard (commercial)</strong></p>
+<ul>
+<li>KX’s commercial API management layer</li>
+<li>Not covered here; see KX documentation if you have a license</li>
+</ul>
+<p>We’ll build a production-grade FastAPI gateway with authentication, OpenAPI docs, and proper error handling.</p>
+<h2 id="designing-the-api"><a class="header" href="#designing-the-api">Designing the API</a></h2>
+<p>Before writing code, decide on your conventions. These decisions are hard to change later:</p>
+<p><strong>Date format</strong>: ISO 8601 (<code>2024-01-15</code>), not Q’s <code>2024.01.15</code>. REST APIs should be format-agnostic; Q dates are an implementation detail.</p>
+<p><strong>Timestamps</strong>: ISO 8601 with UTC timezone (<code>2024-01-15T09:30:00.123Z</code>). Not Q timestamps, not Unix milliseconds.</p>
+<p><strong>Numbers</strong>: JSON doesn’t distinguish int from float. Document your precision guarantees. Prices are floats. Sizes are integers. Don’t mix them up.</p>
+<p><strong>Pagination</strong>: Use <code>limit</code> and <code>offset</code> (or <code>cursor</code>-based for time-series). Don’t return unbounded result sets.</p>
+<p><strong>Errors</strong>: Consistent error format: <code>{"error": "description", "code": "machine_readable_code"}</code>.</p>
+<p><strong>Symbol naming</strong>: Decide early whether API consumers pass <code>"AAPL"</code> or <code>"AAPL.O"</code> and stick with it. Your Q sym and the API sym may differ; the gateway is where you translate.</p>
+<h2 id="a-production-fastapi-gateway"><a class="header" href="#a-production-fastapi-gateway">A Production FastAPI Gateway</a></h2>
+<pre><code class="language-python"># kdb_gateway/main.py
+from fastapi import FastAPI, HTTPException, Depends, Query, Security
+from fastapi.security.api_key import APIKeyHeader
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import date, datetime
+import pykx as kx
+import os
+import logging
+
+logger = logging.getLogger(__name__)
+
+# ─── Configuration ──────────────────────────────────────────────────────────
+
+KDB_HOST = os.getenv("KDB_HOST", "localhost")
+KDB_PORT = int(os.getenv("KDB_PORT", "5001"))
+KDB_USER = os.getenv("KDB_USER", "")
+KDB_PASS = os.getenv("KDB_PASS", "")
+API_KEYS = set(os.getenv("API_KEYS", "dev-key-123").split(","))
+
+# ─── Connection Pool ──────────────────────────────────────────────────────────
+
+class QPool:
+    def __init__(self, host: str, port: int, user: str, password: str, size: int = 4):
+        self._conns = []
+        self._idx = 0
+        self._host = host
+        self._port = port
+        self._user = user
+        self._password = password
+        self._size = size
+
+    def start(self):
+        for _ in range(self._size):
+            auth = f"{self._user}:{self._password}" if self._user else ""
+            conn = kx.SyncQConnection(
+                host=self._host,
+                port=self._port,
+                username=self._user or None,
+                password=self._password or None
+            )
+            self._conns.append(conn)
+        logger.info(f"Connected to kdb+ at {self._host}:{self._port} ({self._size} connections)")
+
+    def stop(self):
+        for conn in self._conns:
+            try:
+                conn.close()
+            except Exception:
+                pass
+        logger.info("kdb+ connections closed")
+
+    def get(self) -&gt; kx.SyncQConnection:
+        conn = self._conns[self._idx % self._size]
+        self._idx += 1
+        return conn
+
+    def query(self, q_code: str, *args):
+        conn = self.get()
+        try:
+            if args:
+                return conn(q_code, *args)
+            return conn(q_code)
+        except Exception as e:
+            logger.error(f"kdb+ query error: {e}")
+            raise
+
+pool = QPool(KDB_HOST, KDB_PORT, KDB_USER, KDB_PASS)
+
+# ─── App Lifecycle ──────────────────────────────────────────────────────────
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    pool.start()
+    yield
+    pool.stop()
+
+app = FastAPI(
+    title="kdb+ Market Data API",
+    description="REST API for accessing kdb+/q time-series market data",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+# ─── Authentication ──────────────────────────────────────────────────────────
+
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+async def require_api_key(api_key: str = Security(api_key_header)):
+    if api_key not in API_KEYS:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+    return api_key
+
+# ─── Response Models ──────────────────────────────────────────────────────────
+
+class Trade(BaseModel):
+    time: str
+    sym: str
+    price: float
+    size: int
+
+class OHLCBar(BaseModel):
+    time: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    vwap: float
+
+class ErrorResponse(BaseModel):
+    error: str
+    code: str
+
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+def serialize_result(result) -&gt; list[dict]:
+    """Convert pykx result to JSON-serializable list of dicts."""
+    import pandas as pd
+    import numpy as np
+
+    df = result.pd()
+
+    # Convert timestamps to ISO strings
+    for col in df.columns:
+        if df[col].dtype == 'datetime64[ns]':
+            df[col] = df[col].dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        elif df[col].dtype == 'object':
+            df[col] = df[col].astype(str)
+
+    return df.to_dict(orient="records")
+
+def q_date(d: date) -&gt; str:
+    """Convert Python date to Q date literal."""
+    return d.strftime("%Y.%m.%d")
+
+# ─── Endpoints ───────────────────────────────────────────────────────────────
+
+@app.get("/health")
+async def health():
+    """Health check. Tests kdb+ connectivity."""
+    try:
+        result = pool.query("1b")
+        return {"status": "ok", "kdb_connected": True}
+    except Exception as e:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "degraded", "kdb_connected": False, "error": str(e)}
+        )
+
+@app.get(
+    "/trades",
+    response_model=list[Trade],
+    summary="Get trades for a symbol",
+    responses={400: {"model": ErrorResponse}, 500: {"model": ErrorResponse}}
+)
+async def get_trades(
+    sym: str = Query(..., description="Ticker symbol, e.g. AAPL", example="AAPL"),
+    date: date = Query(..., description="Trading date"),
+    limit: int = Query(1000, ge=1, le=10000, description="Maximum rows to return"),
+    offset: int = Query(0, ge=0, description="Row offset for pagination"),
+    _: str = Depends(require_api_key)
+):
+    """
+    Retrieve trades for a symbol on a given date.
+
+    Returns up to `limit` trades starting from `offset`, ordered by time.
+    """
+    try:
+        result = pool.query(
+            "{[s;d;n;o] select[n;o] time, sym, price, size from trade where date=d, sym=s}",
+            kx.SymbolAtom(sym.upper()),
+            kx.DateAtom(date),
+            kx.LongAtom(limit),
+            kx.LongAtom(offset)
+        )
+        return serialize_result(result)
+    except kx.QError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e), "code": "q_error"})
+    except Exception as e:
+        logger.exception("Failed to query trades")
+        raise HTTPException(status_code=500, detail={"error": "Internal error", "code": "internal"})
+
+@app.get(
+    "/ohlc",
+    response_model=list[OHLCBar],
+    summary="Get OHLC bars",
+)
+async def get_ohlc(
+    sym: str = Query(..., description="Ticker symbol", example="AAPL"),
+    date: date = Query(..., description="Trading date"),
+    bars: int = Query(30, ge=1, le=390, description="Bar size in minutes"),
+    _: str = Depends(require_api_key)
+):
+    """
+    Retrieve OHLC (open/high/low/close) bars for a symbol.
+
+    `bars` is the bar duration in minutes. 30 gives 30-minute bars,
+    1 gives 1-minute bars (up to 390 for a full trading day).
+    """
+    try:
+        result = pool.query(
+            """{[s;d;b]
+                select
+                    open:   first price,
+                    high:   max price,
+                    low:    min price,
+                    close:  last price,
+                    volume: sum `long$size,
+                    vwap:   size wavg price
+                from trade
+                where date=d, sym=s
+                by time: b xbar time.minute
+            }""",
+            kx.SymbolAtom(sym.upper()),
+            kx.DateAtom(date),
+            kx.LongAtom(bars)
+        )
+        return serialize_result(result)
+    except kx.QError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e), "code": "q_error"})
+    except Exception as e:
+        logger.exception("Failed to query OHLC")
+        raise HTTPException(status_code=500, detail={"error": "Internal error", "code": "internal"})
+
+@app.get("/symbols")
+async def get_symbols(
+    date: Optional[date] = Query(None, description="Date to check symbols for (default: today)"),
+    _: str = Depends(require_api_key)
+):
+    """List available symbols, optionally filtered by date."""
+    q_date_arg = date or __import__('datetime').date.today()
+    try:
+        result = pool.query(
+            "{[d] exec distinct sym from trade where date=d}",
+            kx.DateAtom(q_date_arg)
+        )
+        return {"symbols": sorted([str(s) for s in result.py()])}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/vwap")
+async def get_vwap(
+    date: date = Query(..., description="Trading date"),
+    syms: Optional[str] = Query(None, description="Comma-separated symbols, e.g. AAPL,MSFT"),
+    _: str = Depends(require_api_key)
+):
+    """
+    Compute VWAP for all symbols (or a subset) on a date.
+
+    Returns volume-weighted average price and total volume per symbol.
+    """
+    try:
+        if syms:
+            sym_list = [s.strip().upper() for s in syms.split(",")]
+            result = pool.query(
+                "{[d;ss] select vwap: size wavg price, volume: sum size by sym from trade where date=d, sym in ss}",
+                kx.DateAtom(date),
+                kx.SymbolVector(sym_list)
+            )
+        else:
+            result = pool.query(
+                "{[d] select vwap: size wavg price, volume: sum size by sym from trade where date=d}",
+                kx.DateAtom(date)
+            )
+        return serialize_result(result)
+    except kx.QError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e), "code": "q_error"})
+
+# ─── POST: Execute Q (admin only) ────────────────────────────────────────────
+
+class QQueryRequest(BaseModel):
+    query: str = Field(..., description="Q expression to evaluate")
+
+ADMIN_KEYS = set(os.getenv("ADMIN_API_KEYS", "admin-key-secret").split(","))
+
+async def require_admin_key(api_key: str = Security(api_key_header)):
+    if api_key not in ADMIN_KEYS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return api_key
+
+@app.post("/query")
+async def execute_query(
+    request: QQueryRequest,
+    _: str = Depends(require_admin_key)
+):
+    """
+    Execute an arbitrary Q query. Admin access only.
+
+    Use this sparingly — prefer the typed endpoints above.
+    """
+    try:
+        result = pool.query(request.query)
+        df = result.pd()
+        return {"result": df.to_dict(orient="records") if hasattr(df, 'to_dict') else str(result)}
+    except kx.QError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e), "code": "q_error"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+</code></pre>
+<h3 id="running-it"><a class="header" href="#running-it">Running It</a></h3>
+<pre><code class="language-bash">pip install fastapi uvicorn pykx
+
+# Development
+uvicorn kdb_gateway.main:app --reload --port 8000
+
+# Production
+uvicorn kdb_gateway.main:app \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --workers 4 \
+    --log-level info
+</code></pre>
+<h3 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h3>
+<pre><code class="language-bash">export KDB_HOST=kdb.internal
+export KDB_PORT=5001
+export KDB_USER=apiuser
+export KDB_PASS=secure_password
+export API_KEYS="key1,key2,key3"
+export ADMIN_API_KEYS="admin-secret"
+</code></pre>
+<h3 id="testing"><a class="header" href="#testing">Testing</a></h3>
+<pre><code class="language-bash"># Health check
+curl http://localhost:8000/health
+
+# Get trades (with API key)
+curl -H "X-API-Key: dev-key-123" \
+  "http://localhost:8000/trades?sym=AAPL&amp;date=2024-01-15&amp;limit=100"
+
+# OHLC bars
+curl -H "X-API-Key: dev-key-123" \
+  "http://localhost:8000/ohlc?sym=AAPL&amp;date=2024-01-15&amp;bars=30"
+
+# VWAP for multiple symbols
+curl -H "X-API-Key: dev-key-123" \
+  "http://localhost:8000/vwap?date=2024-01-15&amp;syms=AAPL,MSFT,GOOG"
+
+# OpenAPI docs (no auth needed)
+open http://localhost:8000/docs
+</code></pre>
+<h2 id="rate-limiting"><a class="header" href="#rate-limiting">Rate Limiting</a></h2>
+<p>Add rate limiting with <code>slowapi</code>:</p>
+<pre><code class="language-python">from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.get("/trades")
+@limiter.limit("100/minute")
+async def get_trades(request: Request, ...):
+    ...
+</code></pre>
+<h2 id="caching"><a class="header" href="#caching">Caching</a></h2>
+<p>For expensive queries or endpoints where millisecond-fresh data isn’t needed:</p>
+<pre><code class="language-python">from functools import lru_cache
+import time
+
+class TimedCache:
+    def __init__(self, ttl_seconds: int = 60):
+        self._cache = {}
+        self._ttl = ttl_seconds
+
+    def get(self, key: str):
+        if key in self._cache:
+            value, expires = self._cache[key]
+            if time.time() &lt; expires:
+                return value
+            del self._cache[key]
+        return None
+
+    def set(self, key: str, value):
+        self._cache[key] = (value, time.time() + self._ttl)
+
+symbol_cache = TimedCache(ttl_seconds=300)  # 5-minute cache for symbol list
+
+@app.get("/symbols")
+async def get_symbols(...):
+    cache_key = f"symbols:{date}"
+    cached = symbol_cache.get(cache_key)
+    if cached:
+        return cached
+
+    result = pool.query(...)
+    response = {"symbols": sorted([str(s) for s in result.py()])}
+    symbol_cache.set(cache_key, response)
+    return response
+</code></pre>
+<h2 id="docker-deployment"><a class="header" href="#docker-deployment">Docker Deployment</a></h2>
+<pre><code class="language-dockerfile"># Dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD ["uvicorn", "kdb_gateway.main:app", "--host", "0.0.0.0", "--port", "8000"]
+</code></pre>
+<pre><code class="language-yaml"># docker-compose.yml
+services:
+  kdb-gateway:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      KDB_HOST: kdb
+      KDB_PORT: 5001
+      API_KEYS: "${API_KEYS}"
+    depends_on:
+      - kdb
+    restart: unless-stopped
+
+  kdb:
+    image: kxsys/kdb:latest
+    ports:
+      - "5001:5001"
+    command: ["-p", "5001"]
+</code></pre>
+<h2 id="openapi-integration"><a class="header" href="#openapi-integration">OpenAPI Integration</a></h2>
+<p>FastAPI generates OpenAPI (Swagger) docs automatically. At <code>http://localhost:8000/docs</code> you get an interactive API explorer, and at <code>http://localhost:8000/openapi.json</code> you get the schema for generating client libraries:</p>
+<pre><code class="language-bash"># Generate a Python client from the OpenAPI spec
+pip install openapi-generator-cli
+openapi-generator-cli generate \
+    -i http://localhost:8000/openapi.json \
+    -g python \
+    -o ./generated-client \
+    --package-name kdb_client
+</code></pre>
+<p>Your consumers get a typed client without writing any integration code. That’s the kind of thing that makes the Python team happy with you.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="streaming-integrations-kafka-websockets-and-real-time-q"><a class="header" href="#streaming-integrations-kafka-websockets-and-real-time-q">Streaming Integrations: Kafka, WebSockets, and Real-Time Q</a></h1>
+<p>kdb+/q was built for real-time data. The tick infrastructure — the tickerplant, real-time database, and historical database — is one of Q’s strongest features and the reason it dominates in high-frequency finance. What it wasn’t originally designed for is plugging into the broader streaming ecosystem: Kafka topics, WebSocket-hungry frontends, and the event-driven microservices architecture that everyone built in the 2020s.</p>
+<p>This chapter is about making Q a first-class participant in that ecosystem — both as a consumer of external streams and as a producer of real-time data.</p>
+<h2 id="qs-native-tick-architecture-brief-review"><a class="header" href="#qs-native-tick-architecture-brief-review">Q’s Native Tick Architecture (Brief Review)</a></h2>
+<p>Before plugging Q into Kafka, understand what Q already does natively:</p>
+<pre><code>Feed Handler → Tickerplant → RDB (real-time DB)
+                           → Subscribers (other q processes)
+                           → Log file → HDB (historical DB)
+</code></pre>
+<p>The tickerplant receives data, timestamps it, writes to a log, and publishes to subscribers via IPC. Each subscriber calls <code>.u.sub</code> to register and receives updates via <code>.u.upd</code>.</p>
+<p>This is already a streaming architecture — it’s just Q-native. When you need to integrate with non-Q systems, you extend this pattern rather than replacing it.</p>
+<h2 id="kafka-integration"><a class="header" href="#kafka-integration">Kafka Integration</a></h2>
+<h3 id="architecture"><a class="header" href="#architecture">Architecture</a></h3>
+<p>The two Kafka-Q integration patterns:</p>
+<p><strong>Q as consumer</strong>: A Q process subscribes to Kafka topics and ingests data into kdb+ tables. Useful for bringing external event streams into your time-series database.</p>
+<p><strong>Q as producer</strong>: A Q process (typically a tickerplant subscriber) publishes processed data to Kafka topics for consumption by other services.</p>
+<h3 id="kafkaq"><a class="header" href="#kafkaq">KafkaQ</a></h3>
+<p>The <code>KafkaQ</code> library (from KX) provides Kafka integration for q:</p>
+<pre><code class="language-bash"># Install KafkaQ (requires librdkafka)
+# macOS
+brew install librdkafka
+# Ubuntu/Debian
+apt-get install librdkafka-dev
+
+# Download KafkaQ
+# https://github.com/KxSystems/kafka
+# Place kafkaq.so/.dylib in your q path
+</code></pre>
+<pre><code class="language-q">/ Load KafkaQ
+\l kafkaq.q
+
+/ ─── Consumer ───────────────────────────────────────────────────────────────
+
+/ Create a consumer with configuration
+consumer: .kafka.newConsumer[
+    `bootstrap.servers`group.id`auto.offset.reset!
+    ("localhost:9092"; "my-q-consumer"; "earliest")
+]
+
+/ Subscribe to topics
+.kafka.subscribe[consumer; `trade_data`order_data]
+
+/ Message handler — called for each incoming Kafka message
+.kafka.recvMsg: {[consumer; msg]
+    / msg is a dictionary: `topic`partition`offset`key`data`timestamp
+    topic: msg`topic;
+    payload: .j.k msg`data;   / deserialize JSON payload
+
+    / Route to appropriate handler
+    $[topic ~ "trade_data";   ingestTrade payload;
+      topic ~ "order_data";   ingestOrder payload;
+      / default
+      -1 "Unknown topic: ", string topic]
+    }
+
+/ Start polling (call in a timer or loop)
+.kafka.poll[consumer; 1000]   / poll with 1000ms timeout
+
+/ ─── Trade ingestion ─────────────────────────────────────────────────────────
+
+/ In-memory trade table (replace with actual schema)
+trade: ([] time:`timestamp$(); sym:`symbol$(); price:`float$(); size:`long$())
+
+ingestTrade: {[payload]
+    / Convert Kafka message to Q row
+    row: (
+        `timestamp$payload`timestamp;
+        `$payload`sym;
+        `float$payload`price;
+        `long$payload`size
+    );
+    `trade insert row;
+
+    / Optional: forward to tickerplant
+    if[0 &lt; count tp_handle; neg[tp_handle] (`.u.upd; `trade; row)]
+    }
+</code></pre>
+<h3 id="q-as-kafka-producer"><a class="header" href="#q-as-kafka-producer">Q as Kafka Producer</a></h3>
+<p>Publishing Q data to Kafka:</p>
+<pre><code class="language-q">\l kafkaq.q
+
+/ Create a producer
+producer: .kafka.newProducer[
+    `bootstrap.servers`acks!
+    ("localhost:9092"; "all")
+]
+
+/ Publish tickerplant updates to Kafka
+/ Add this to your RDB subscriber
+
+.u.upd: {[t; data]
+    / Standard RDB upsert
+    t insert data;
+
+    / Also publish to Kafka
+    publishToKafka[t; data]
+    }
+
+publishToKafka: {[table; data]
+    topic: "kdb-", string table;
+
+    / Convert each row to JSON and publish
+    rows: flip data;
+    do[count rows 0;
+        row: rows[; i];
+        msg: .j.j `table`data!(table; row);
+        .kafka.publish[producer; `$topic; ""; msg]
+    ]
+    }
+</code></pre>
+<h3 id="python-kafka-bridge"><a class="header" href="#python-kafka-bridge">Python Kafka Bridge</a></h3>
+<p>If installing KafkaQ feels like more than you want to manage, a Python bridge is a clean alternative:</p>
+<pre><code class="language-python"># kafka_bridge.py
+# Consumes from Kafka, inserts into kdb+ via IPC
+
+from kafka import KafkaConsumer
+import pykx as kx
+import json
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+def run_bridge(
+    kafka_brokers: str,
+    kafka_topic: str,
+    kdb_host: str,
+    kdb_port: int,
+    kdb_table: str
+):
+    consumer = KafkaConsumer(
+        kafka_topic,
+        bootstrap_servers=kafka_brokers,
+        value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+        auto_offset_reset='latest',
+        group_id='kdb-bridge'
+    )
+
+    q = kx.SyncQConnection(host=kdb_host, port=kdb_port)
+    logger.info(f"Bridge running: {kafka_topic} → kdb+:{kdb_port}:{kdb_table}")
+
+    batch = []
+    batch_size = 100
+
+    try:
+        for message in consumer:
+            payload = message.value
+            batch.append(payload)
+
+            if len(batch) &gt;= batch_size:
+                flush_batch(q, kdb_table, batch)
+                batch = []
+
+    except KeyboardInterrupt:
+        if batch:
+            flush_batch(q, kdb_table, batch)
+    finally:
+        consumer.close()
+        q.close()
+
+def flush_batch(q: kx.SyncQConnection, table: str, batch: list):
+    """Insert a batch of records into kdb+."""
+    import pandas as pd
+
+    df = pd.DataFrame(batch)
+
+    # Type coercions
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+    if 'sym' in df.columns:
+        df['sym'] = df['sym'].astype(str)
+
+    q(f'`{table} insert', df)
+    logger.info(f"Flushed {len(batch)} records to {table}")
+
+if __name__ == '__main__':
+    run_bridge(
+        kafka_brokers='localhost:9092',
+        kafka_topic='market-trades',
+        kdb_host='localhost',
+        kdb_port=5001,
+        kdb_table='trade'
+    )
+</code></pre>
+<h2 id="websockets-streaming-q-data-to-browsers"><a class="header" href="#websockets-streaming-q-data-to-browsers">WebSockets: Streaming Q Data to Browsers</a></h2>
+<p>The use case: a dashboard that shows live market data, updated as trades arrive in kdb+. WebSockets are the right transport for this — persistent connection, low overhead, bidirectional.</p>
+<h3 id="qs-built-in-websocket-server"><a class="header" href="#qs-built-in-websocket-server">Q’s Built-In WebSocket Server</a></h3>
+<p>kdb+ 3.5+ has native WebSocket support via <code>.z.wo</code>, <code>.z.wc</code>, <code>.z.ws</code>:</p>
+<pre><code class="language-q">\p 5001   / start on port 5001 (same port handles HTTP, IPC, and WebSockets)
+
+/ WebSocket connection tracking
+ws_clients: `long$()   / list of connected WebSocket handles
+
+.z.wo: {[h]
+    / h = new WebSocket handle
+    ws_clients,: h;
+    -1 "WS connected: ", string h;
+    }
+
+.z.wc: {[h]
+    / h = closing WebSocket handle
+    ws_clients: ws_clients except h;
+    -1 "WS disconnected: ", string h;
+    }
+
+.z.ws: {[x]
+    / x = incoming WebSocket message (string or bytes)
+    / Parse request and send back data
+    request: .j.k x;
+
+    response: handleWsRequest request;
+    neg[.z.w] .j.j response
+    }
+
+handleWsRequest: {[req]
+    action: req`action;
+    $[action ~ "subscribe";
+        handleSubscribe req;
+      action ~ "query";
+        handleQuery req;
+      `error`message!("unknown_action"; action)]
+    }
+
+handleSubscribe: {[req]
+    syms: `$req`syms;
+    / Store subscription: handle -&gt; syms
+    `subscriptions upsert (.z.w; syms);
+    `status`message!("subscribed"; "Subscribed to ", " " sv string syms)
+    }
+
+handleQuery: {[req]
+    q_code: req`query;
+    result: @[value; q_code; {[e] `error`message!(1b; string e)}];
+    `status`data!("ok"; result)
+    }
+
+/ Broadcast trade updates to subscribed WebSocket clients
+subscriptions: ([handle:`long$()] syms:())
+
+broadcastTrade: {[trade_data]
+    / For each connected WS client with matching subscription
+    {[h; trade_data]
+        client_syms: subscriptions[h; `syms];
+        matching: trade_data where trade_data[`sym] in client_syms;
+        if[count matching;
+            neg[h] .j.j `type`data!("trade_update"; matching)]
+    }[; trade_data] each ws_clients;
+    }
+
+/ Hook into tickerplant update function
+.u.upd: {[t; data]
+    $[t ~ `trade;
+        broadcastTrade data;
+        ()];
+    }
+</code></pre>
+<h3 id="javascript-client"><a class="header" href="#javascript-client">JavaScript Client</a></h3>
+<pre><code class="language-javascript">// dashboard.js
+const ws = new WebSocket('ws://localhost:5001');
+
+ws.onopen = () =&gt; {
+    console.log('Connected to kdb+');
+
+    // Subscribe to specific symbols
+    ws.send(JSON.stringify({
+        action: 'subscribe',
+        syms: ['AAPL', 'MSFT', 'GOOG']
+    }));
+};
+
+ws.onmessage = (event) =&gt; {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === 'trade_update') {
+        updateDashboard(msg.data);
+    }
+};
+
+ws.onerror = (error) =&gt; console.error('WebSocket error:', error);
+ws.onclose = () =&gt; {
+    console.log('Disconnected');
+    setTimeout(() =&gt; reconnect(), 5000);  // auto-reconnect
+};
+
+function updateDashboard(trades) {
+    trades.forEach(trade =&gt; {
+        const el = document.getElementById(`price-${trade.sym}`);
+        if (el) {
+            el.textContent = trade.price.toFixed(2);
+            el.classList.add('flash');
+            setTimeout(() =&gt; el.classList.remove('flash'), 300);
+        }
+    });
+}
+
+// Request historical data via query
+function fetchOHLC(sym, date) {
+    ws.send(JSON.stringify({
+        action: 'query',
+        query: `select from ohlc where sym=\`${sym}, date=${date}`
+    }));
+}
+</code></pre>
+<h3 id="fastapi-websocket-proxy"><a class="header" href="#fastapi-websocket-proxy">FastAPI WebSocket Proxy</a></h3>
+<p>For production, a FastAPI proxy handles authentication, connection management, and adds observability:</p>
+<pre><code class="language-python"># websocket_proxy.py
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.websockets import WebSocketState
+import pykx as kx
+import asyncio
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+app = FastAPI()
+
+# kdb+ connection for WebSocket data
+q = kx.SyncQConnection(host='localhost', port=5001)
+
+class ConnectionManager:
+    def __init__(self):
+        self.active: dict[str, list[WebSocket]] = {}  # sym -&gt; [websocket]
+
+    async def connect(self, websocket: WebSocket, sym: str):
+        await websocket.accept()
+        if sym not in self.active:
+            self.active[sym] = []
+        self.active[sym].append(websocket)
+        logger.info(f"WS connected for {sym}, total: {sum(len(v) for v in self.active.values())}")
+
+    def disconnect(self, websocket: WebSocket, sym: str):
+        if sym in self.active:
+            self.active[sym] = [ws for ws in self.active[sym] if ws != websocket]
+
+    async def broadcast(self, sym: str, data: dict):
+        if sym not in self.active:
+            return
+        dead = []
+        for ws in self.active[sym]:
+            try:
+                if ws.client_state == WebSocketState.CONNECTED:
+                    await ws.send_json(data)
+            except Exception:
+                dead.append(ws)
+        for ws in dead:
+            self.active[sym].remove(ws)
+
+manager = ConnectionManager()
+
+@app.websocket("/stream/{sym}")
+async def stream_symbol(websocket: WebSocket, sym: str):
+    """Stream real-time trades for a symbol."""
+    await manager.connect(websocket, sym.upper())
+    sym = sym.upper()
+
+    try:
+        # Send initial snapshot
+        snapshot = q(
+            "{[s] select[-50] time, price, size from trade where date=.z.d, sym=s}",
+            kx.SymbolAtom(sym)
+        ).pd()
+        await websocket.send_json({
+            "type": "snapshot",
+            "sym": sym,
+            "data": snapshot.to_dict(orient="records")
+        })
+
+        # Keep connection alive, receive control messages
+        while True:
+            try:
+                msg = await asyncio.wait_for(websocket.receive_json(), timeout=30)
+                if msg.get("action") == "ping":
+                    await websocket.send_json({"type": "pong"})
+            except asyncio.TimeoutError:
+                # Send keepalive
+                await websocket.send_json({"type": "heartbeat"})
+
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, sym)
+        logger.info(f"WS disconnected: {sym}")
+
+# Background task: poll kdb+ and broadcast updates
+async def poll_and_broadcast():
+    """Poll kdb+ for new trades and broadcast to subscribers."""
+    last_time = {}  # sym -&gt; last seen time
+
+    while True:
+        await asyncio.sleep(0.5)  # 500ms polling interval
+
+        for sym in list(manager.active.keys()):
+            if not manager.active.get(sym):
+                continue
+            try:
+                cutoff = last_time.get(sym, "00:00:00.000")
+                new_trades = q(
+                    "{[s;t] select time, price, size from trade where date=.z.d, sym=s, time&gt;t}",
+                    kx.SymbolAtom(sym),
+                    kx.TimeAtom(cutoff)
+                ).pd()
+
+                if len(new_trades) &gt; 0:
+                    last_time[sym] = str(new_trades['time'].max())
+                    await manager.broadcast(sym, {
+                        "type": "update",
+                        "sym": sym,
+                        "trades": new_trades.to_dict(orient="records")
+                    })
+            except Exception as e:
+                logger.error(f"Poll error for {sym}: {e}")
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(poll_and_broadcast())
+</code></pre>
+<h2 id="handling-back-pressure"><a class="header" href="#handling-back-pressure">Handling Back-Pressure</a></h2>
+<p>When Q is producing data faster than consumers can handle it, you need a back-pressure strategy:</p>
+<pre><code class="language-q">/ Simple back-pressure in Q: check send buffer before sending
+broadcastWithBackPressure: {[h; data]
+    / .z.W[h] = bytes in send buffer for handle h
+    buffer_size: .z.W[h];
+
+    $[buffer_size &gt; 1000000;   / 1MB threshold
+        / Buffer full: drop or queue
+        (-1 "Dropping update for slow consumer: ", string h);
+        / Buffer OK: send
+        neg[h] .j.j data]
+    }
+</code></pre>
+<p>For Kafka as a buffer (the right architectural answer for high-throughput):</p>
+<pre><code>kdb+ tickerplant
+    → publishes to Kafka topic (Q→Kafka producer)
+    → Kafka topic acts as buffer
+    → slow consumers read from Kafka at their own pace
+</code></pre>
+<p>This decouples the producer (kdb+) from the consumer’s throughput.</p>
+<h2 id="the-complete-real-time-pipeline"><a class="header" href="#the-complete-real-time-pipeline">The Complete Real-Time Pipeline</a></h2>
+<p>Putting it together: Kafka → Q → WebSocket → Browser:</p>
+<pre><code>[Market Data Feed]
+        ↓
+[Kafka Topic: raw-trades]
+        ↓
+[kdb+ Feed Handler] → [Tickerplant] → [RDB]
+                                     ↓
+                            [WebSocket Server]
+                                     ↓
+                         [Browser Dashboard]
+                                     ↓
+                              [REST API]
+                                     ↓
+                         [External Consumers]
+</code></pre>
+<p>Each layer has a clear responsibility:</p>
+<ul>
+<li><strong>Kafka</strong>: durable message queue, decouples feed from processing</li>
+<li><strong>kdb+ tickerplant</strong>: time-stamping, logging, fan-out</li>
+<li><strong>RDB</strong>: in-memory storage for today’s data</li>
+<li><strong>WebSocket server</strong>: real-time push to browsers</li>
+<li><strong>REST API</strong>: request-response for historical data</li>
+</ul>
+<p>Q sits in the middle of this, doing what it does best: storing and querying time-series data at speed.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="developer-tooling-linters-formatters-and-making-q-less-lonely"><a class="header" href="#developer-tooling-linters-formatters-and-making-q-less-lonely">Developer Tooling: Linters, Formatters, and Making Q Less Lonely</a></h1>
+<p>Q development has historically been a solitary activity. You write code in a text editor, paste it into a REPL, and find out what’s wrong when it errors. There’s no static type checker, the formatter options are limited, and “test suite” in many Q shops means “I ran it and it seemed fine.”</p>
+<p>This has improved. The improvement is modest compared to what Python, Rust, or JavaScript developers take for granted, but it’s real and worth using.</p>
+<h2 id="linting-qls-and-the-kx-language-server"><a class="header" href="#linting-qls-and-the-kx-language-server">Linting: qls and the KX Language Server</a></h2>
+<p>The <strong>KX Language Server</strong> (<code>qls</code>) is the most capable static analysis tool available for Q. It powers the VS Code extension’s diagnostics and can be run standalone for CI integration.</p>
+<p>What it checks:</p>
+<ul>
+<li>Undefined variables (within analyzable scope)</li>
+<li>Type errors it can infer statically</li>
+<li>Unused variable assignments</li>
+<li>Shadowed names</li>
+<li>Wrong number of arguments to known functions</li>
+<li>Some style issues</li>
+</ul>
+<h3 id="using-qls-in-vs-code"><a class="header" href="#using-qls-in-vs-code">Using qls in VS Code</a></h3>
+<p>The KX VS Code extension installs and runs <code>qls</code> automatically. Underlined code in the editor with a red/yellow squiggle is <code>qls</code> talking to you. Take it seriously.</p>
+<p>Common diagnostics:</p>
+<pre><code class="language-q">/ qls will flag this:
+myFunc: {[x; y]
+    result: x + z   / 'z' is not defined in this scope
+    result * y
+    }
+
+/ And this:
+unused: 42   / assigned but never used in the function
+
+/ And this (wrong arg count):
+count[1; 2]   / count takes 1 argument
+
+/ This is fine:
+f: {[x] x * 2}
+g: {[x] f x}
+</code></pre>
+<h3 id="qls-in-ci"><a class="header" href="#qls-in-ci">qls in CI</a></h3>
+<p>For automated code quality checks:</p>
+<pre><code class="language-bash"># Install (part of the KX VS Code extension bundle, also available standalone)
+npm install -g @kxsystems/kdb-lsp
+
+# Run on Q files
+qls --check src/**/*.q
+
+# With specific rules
+qls --check --rules=all src/
+
+# JSON output for programmatic processing
+qls --check --format=json src/*.q | jq '.diagnostics[] | select(.severity == "error")'
+</code></pre>
+<p>GitHub Actions integration:</p>
+<pre><code class="language-yaml"># .github/workflows/lint.yml
+name: Lint Q Code
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kdb-lsp
+        run: npm install -g @kxsystems/kdb-lsp
+
+      - name: Lint Q files
+        run: |
+          qls --check --format=json q/**/*.q &gt; lint_results.json || true
+          cat lint_results.json
+          # Fail if any errors
+          errors=$(cat lint_results.json | jq '[.diagnostics[] | select(.severity == "error")] | length')
+          if [ "$errors" -gt "0" ]; then
+            echo "Found $errors lint errors"
+            exit 1
+          fi
+</code></pre>
+<h2 id="formatting-the-state-of-q-formatting"><a class="header" href="#formatting-the-state-of-q-formatting">Formatting: The State of Q Formatting</a></h2>
+<p>Q has no official formatter equivalent to <code>gofmt</code>, <code>rustfmt</code>, or <code>black</code>. This is a gap in the tooling ecosystem.</p>
+<p>What exists:</p>
+<ul>
+<li><code>qformat</code> (community): A Python-based formatter for Q code. Not as opinionated as <code>black</code>, but handles basic whitespace and indentation.</li>
+<li>Manual conventions: Most Q shops define their own style guide and enforce it in code review.</li>
+</ul>
+<p>Install and use <code>qformat</code>:</p>
+<pre><code class="language-bash">pip install qformat
+
+# Format in place
+qformat --in-place mycode.q
+
+# Check without modifying (for CI)
+qformat --check mycode.q &amp;&amp; echo "Formatted" || echo "Needs formatting"
+</code></pre>
+<h3 id="q-style-conventions-the-practical-guide"><a class="header" href="#q-style-conventions-the-practical-guide">Q Style Conventions (The Practical Guide)</a></h3>
+<p>Since there’s no <code>gofmt</code> that enforces these for you, here are conventions worth adopting:</p>
+<pre><code class="language-q">/ ─── Naming ──────────────────────────────────────────────────────────────────
+
+/ Functions: camelCase
+computeVwap: {[trades] ...}
+
+/ Tables: lowercase
+trade: ([] time:`timestamp$(); sym:`symbol$(); price:`float$())
+
+/ Namespaces: lowercase with dot
+.myapp.config: `host`port!("localhost"; 5001)
+.myapp.init: {[] ...}
+
+/ Constants: UPPERCASE (informal convention)
+MAX_SIZE: 1000000
+
+/ ─── Function Style ──────────────────────────────────────────────────────────
+
+/ Named arguments for multi-arg functions (don't use x y z for non-trivial functions)
+computeOHLC: {[trades; sym; date; barMins]
+    select
+        open:  first price,
+        high:  max price,
+        low:   min price,
+        close: last price
+    from trades
+    where date=date, sym=sym
+    by time: barMins xbar time.minute
+    }
+
+/ Short lambda: x y z are fine for 1-3 arg lambdas with obvious semantics
+doubled: {x * 2}
+sumPair: {x + y}
+
+/ ─── Spacing ─────────────────────────────────────────────────────────────────
+
+/ Space around operators in expressions
+a: b + c * d     / good
+a:b+c*d          / bad (hard to read at speed)
+
+/ No space before colon in assignment (the q way)
+result: 42       / good
+result : 42      / bad
+
+/ Space after semicolon in multi-statement function
+f: {[x] a: x+1; b: a*2; b-1}  / acceptable for short functions
+
+/ Multi-line for complex functions
+f: {[x]
+    a: x + 1;
+    b: a * 2;
+    b - 1
+    }
+
+/ ─── Documentation ──────────────────────────────────────────────────────────
+
+/ Use line comments for non-obvious logic
+/ Use block comments for function documentation
+
+/ Block comment style for function docs:
+/ computeVwap: Compute volume-weighted average price
+/   trades: trade table with columns time, sym, price, size
+/   sym: symbol to compute VWAP for
+/   date: date to compute VWAP for
+/   returns: float (VWAP) or null if no trades
+computeVwap: {[trades; sym; date]
+    data: select from trades where date=date, sym=sym;
+    $[count data;
+        data[`size] wavg data[`price];
+        0n]
+    }
+</code></pre>
+<h2 id="testing-q-unit-and-homemade-test-frameworks"><a class="header" href="#testing-q-unit-and-homemade-test-frameworks">Testing: q-unit and Homemade Test Frameworks</a></h2>
+<p>Q doesn’t have a built-in test framework. The options are:</p>
+<p><strong><code>q-unit</code></strong>: A minimal test framework for Q. Similar in spirit to xUnit.</p>
+<p><strong><code>qspec</code></strong>: A BDD-style testing framework. Less used but cleaner for descriptive tests.</p>
+<p><strong>Roll your own</strong>: Many Q shops use a simple convention file that tests functions inline.</p>
+<h3 id="q-unit"><a class="header" href="#q-unit">q-unit</a></h3>
+<pre><code class="language-bash"># Download q-unit
+# https://github.com/CharlesSkelton/qunit
+# Place qunit.q in your q path
+</code></pre>
+<pre><code class="language-q">/ test_trade.q
+\l qunit.q
+
+/ Test: VWAP calculation
+test_vwap_basic: {
+    trades: ([] price: 100.0 101.0 99.0; size: 100 200 150);
+    expected: (100.0*100 + 101.0*200 + 99.0*150) % (100+200+150);
+    result: computeVwap trades;
+    .qunit.assertEqual[result; expected; "basic VWAP"]
+    }
+
+test_vwap_empty: {
+    trades: ([] price:`float$(); size:`long$());
+    result: computeVwap trades;
+    .qunit.assertNull[result; "empty input returns null"]
+    }
+
+test_vwap_single: {
+    trades: ([] price: enlist 100.0; size: enlist 100);
+    result: computeVwap trades;
+    .qunit.assertEqual[result; 100.0; "single trade VWAP"]
+    }
+
+/ Run tests
+.qunit.run[]
+</code></pre>
+<h3 id="simple-homemade-framework"><a class="header" href="#simple-homemade-framework">Simple Homemade Framework</a></h3>
+<p>If adding a dependency feels heavy, this pattern works fine for smaller codebases:</p>
+<pre><code class="language-q">/ test.q — minimal test runner
+
+.test.passed: 0;
+.test.failed: 0;
+
+/ assert: check a condition
+.test.assert: {[name; condition]
+    $[condition;
+        [.test.passed +: 1;
+         -1 "[PASS] ", name];
+        [.test.failed +: 1;
+         -1 "[FAIL] ", name]]
+    }
+
+/ assertEqual: check equality
+.test.assertEqual: {[name; actual; expected]
+    .test.assert[name; actual ~ expected]
+    }
+
+/ assertError: check that an expression throws
+.test.assertError: {[name; expr]
+    result: @[value; expr; {[e] 1b}];
+    .test.assert[name; result ~ 1b]
+    }
+
+/ run: execute test function, report results
+.test.run: {[testFns]
+    testFns@\: ();
+    -1 "\nResults: ", (string .test.passed), " passed, ",
+       (string .test.failed), " failed";
+    if[.test.failed &gt; 0; exit 1]   / non-zero exit for CI
+    }
+
+/ ─── Example tests ──────────────────────────────────────────────────────────
+
+testComputeVwap: {[]
+    .test.assertEqual[
+        "basic VWAP";
+        computeVwap ([] price:100.0 101.0; size:100 200);
+        (100.0*100 + 101.0*200) % 300
+    ];
+    .test.assertError[
+        "null sym throws";
+        {computeVwap ([] price:1.0; size:1); (0N; .z.d)}
+    ]
+    }
+
+testScalePrice: {[]
+    .test.assertEqual["scale by 2"; scalePrice[2.0; 100.0]; 200.0];
+    .test.assertEqual["scale by 0"; scalePrice[0.0; 100.0]; 0.0];
+    .test.assertEqual["negative scale"; scalePrice[-1.0; 100.0]; -100.0]
+    }
+
+.test.run `testComputeVwap`testScalePrice
+</code></pre>
+<p>Run from the command line:</p>
+<pre><code class="language-bash">q test.q -q   / -q for quiet mode (suppresses startup output)
+echo "Exit code: $?"  / 0 = all tests pass, 1 = failures
+</code></pre>
+<h3 id="ci-integration-for-tests"><a class="header" href="#ci-integration-for-tests">CI Integration for Tests</a></h3>
+<pre><code class="language-yaml"># .github/workflows/test.yml
+name: Test Q Code
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download kdb+
+        run: |
+          # The free on-demand license works for CI
+          # Set QLIC to point to your license file
+          wget -q https://files.kx.com/linuxx86.zip
+          unzip -q linuxx86.zip -d ~/q
+          echo "$HOME/q/l64" &gt;&gt; $GITHUB_PATH
+
+      - name: Run Q tests
+        env:
+          QLIC: ${{ secrets.KX_LICENSE_ENCODED }}
+        run: |
+          echo "$QLIC" | base64 -d &gt; ~/q/kc.lic
+          q tests/test.q -q
+</code></pre>
+<h2 id="version-control-practices"><a class="header" href="#version-control-practices">Version Control Practices</a></h2>
+<p>Q code in version control isn’t different from any other code, but a few Q-specific practices help:</p>
+<h3 id="gitignore-for-q-projects"><a class="header" href="#gitignore-for-q-projects"><code>.gitignore</code> for Q Projects</a></h3>
+<pre><code class="language-gitignore"># kdb+ generated files
+*.log
+*.idx
+*.d
+
+# Splayed table files (the data, not the schema)
+sym
+*.dat
+
+# Q session state
+.q
+.z_history
+
+# Build artifacts
+*.so
+*.dylib
+
+# License files (never commit these)
+*.lic
+kc.lic
+</code></pre>
+<h3 id="separating-schema-from-data"><a class="header" href="#separating-schema-from-data">Separating Schema from Data</a></h3>
+<p>Keep your table schemas in <code>.q</code> files under version control; keep the actual data files out:</p>
+<pre><code>project/
+├── q/
+│   ├── schema.q      # table definitions
+│   ├── functions.q   # business logic
+│   └── init.q        # startup script
+├── tests/
+│   └── test.q
+└── data/             # not in git
+    ├── hdb/
+    └── rdb/
+</code></pre>
+<pre><code class="language-q">/ schema.q — version controlled
+trade: ([]
+    time:  `timestamp$();
+    sym:   `symbol$();
+    price: `float$();
+    size:  `long$()
+    )
+
+quote: ([]
+    time:  `timestamp$();
+    sym:   `symbol$();
+    bid:   `float$();
+    ask:   `float$();
+    bsize: `long$();
+    asize: `long$()
+    )
+</code></pre>
+<h2 id="dependency-management"><a class="header" href="#dependency-management">Dependency Management</a></h2>
+<p>Q has no package manager. The ecosystem is small enough that this isn’t as painful as it sounds, but it’s something to manage intentionally.</p>
+<p>Common patterns:</p>
+<pre><code class="language-q">/ Explicit version tracking in a manifest
+/ versions.q
+\d .versions
+kdbplus: "4.1.0"
+kafkaq: "1.5.2"
+websockets: "0.3.1"
+\d .
+
+/ Load dependencies with version checks
+loadDep: {[name; minVersion]
+    // Load the library
+    @[system; "l ", string name; {[e] '"Failed to load ", string name, ": ", e}];
+    // Check version if accessible
+    $[minVersion &lt;= .versions[name];
+        -1 "Loaded ", string name, " v", string .versions[name];
+        '"Version ", string name, " ", string .versions[name],
+         " &lt; required ", string minVersion]
+    }
+</code></pre>
+<p>No lock files, no <code>requirements.txt</code>, no <code>Cargo.toml</code>. Manage versions explicitly and document them. It’s not ideal. It’s the reality.</p>
+<h2 id="profiling-q-code"><a class="header" href="#profiling-q-code">Profiling Q Code</a></h2>
+<p>For performance work, Q has a built-in profiler:</p>
+<pre><code class="language-q">/ Time a single expression
+\t select from trade where date=.z.d, sym=`AAPL
+/ Output: 12 (milliseconds)
+
+/ Time over N iterations
+\t:1000 count trade
+/ Output: 3 (total ms for 1000 runs)
+
+/ More detailed profiling with .Q.ts
+.Q.ts select from trade where date=.z.d
+/ Output: (time ms; space bytes)
+
+/ Memory usage
+.Q.w[]
+/ `used`heap`peak`wmax`mmap`mphy`syms`symw
+/ See current memory allocation
+</code></pre>
+<p>For deeper profiling — finding hotspots in complex Q code — the combination of <code>\t</code> on individual functions with binary search is often the fastest approach:</p>
+<pre><code class="language-q">/ Profile each step of a pipeline
+stages: (
+    "load";       {select from trade where date=.z.d};
+    "filter";     {select from trade where date=.z.d, sym=`AAPL};
+    "aggregate";  {select vwap:size wavg price by sym from trade where date=.z.d};
+    "join";       {aj[`sym`time; ...; ...]}
+    );
+
+/ Time each stage
+{-1 (x 0), ": ", string \t (x 1)[]} each stages
+</code></pre>
+<p>There’s no flame graph generator for Q. Yet.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="where-to-go-from-here"><a class="header" href="#where-to-go-from-here">Where to Go From Here</a></h1>
+<p>You now have a map of the integration landscape. Let’s be direct about what you actually need.</p>
+<h2 id="the-honest-summary"><a class="header" href="#the-honest-summary">The Honest Summary</a></h2>
+<p><strong>If you’re building a data pipeline that feeds kdb+ from Kafka</strong>: Use the Python Kafka bridge pattern from the Streaming chapter. It’s the lowest-friction path, and Python’s Kafka client ecosystem is mature. If throughput demands it, graduate to the native KafkaQ library.</p>
+<p><strong>If your Python team needs kdb+ data</strong>: Give them the FastAPI gateway from the REST chapter. They get a standard REST API with OpenAPI docs, you retain control over what they can query. <code>pykx</code> if they need direct access; the REST API if they just need data.</p>
+<p><strong>If you’re doing R-based research on kdb+ data</strong>: <code>rkdb</code> plus the “aggregate in Q, analyze in R” pattern. The failure mode is pulling raw tick data into R. Don’t do that.</p>
+<p><strong>If you’re building high-performance infrastructure around kdb+</strong>: Rust via <code>kdbplus</code>. IPC for most use cases; FFI only when you need to write kdb+ extensions.</p>
+<p><strong>If your IDE situation is still “text editor and a REPL”</strong>: VS Code with the KX extension. Configure it with a connection to your dev kdb+ process. The interactive execution and diagnostics are worth the fifteen minutes of setup.</p>
+<h2 id="what-we-didnt-cover"><a class="header" href="#what-we-didnt-cover">What We Didn’t Cover</a></h2>
+<p>A few areas deliberately left out:</p>
+<p><strong>C integration</strong>: The kdb+ C API is comprehensive and well-documented by KX. If you’re writing a feed handler in C, the KX documentation is more authoritative than anything here.</p>
+<p><strong>Java integration</strong>: <code>jdbc</code> for kdb+ exists and works. If your organization is a Java shop and you need Q integration, the JDBC driver is maintained by KX and integrates cleanly with standard Java database frameworks.</p>
+<p><strong>KX Insights and KDB.AI</strong>: KX’s commercial products have their own integration story. This book covers the open-source and community tooling; the commercial products have their own documentation.</p>
+<p><strong>kdb+ on cloud infrastructure</strong>: Deploying kdb+ on AWS/GCP/Azure has become more tractable with containers and KX’s cloud products. The integration patterns here work the same in cloud environments; the operational considerations are different.</p>
+<p><strong>Time-series ML with kdb+</strong>: The combination of kdb+ tick data and Python ML libraries (scikit-learn, PyTorch, etc.) is a whole book. The PyQ and pykx chapters give you the foundation.</p>
+<h2 id="the-patterns-that-matter"><a class="header" href="#the-patterns-that-matter">The Patterns That Matter</a></h2>
+<p>Stepping back, three architectural patterns appear throughout this book:</p>
+<p><strong>Pattern 1: Q as the source of truth, everything else as a consumer</strong></p>
+<pre><code>Tick → kdb+ → [Python analytics] [R research] [REST API] [WebSocket dashboard]
+</code></pre>
+<p>Q does the heavy lifting: ingestion, storage, time-series queries. External tools read from it. The integration layer (FastAPI, qPython, rkdb) is thin and stateless.</p>
+<p><strong>Pattern 2: Q as one node in a broader pipeline</strong></p>
+<pre><code>Kafka → kdb+ → Kafka → [downstream services]
+</code></pre>
+<p>Q participates in a message-passing architecture. It consumes from Kafka, enriches or aggregates, and publishes back. Good for organizations that have already standardized on event streaming.</p>
+<p><strong>Pattern 3: Q embedded in a polyglot service</strong></p>
+<pre><code>Rust service → kdb+ (IPC) → Rust service
+             → kdb+ (FFI) ←
+</code></pre>
+<p>A Rust (or Go, or C++) service uses kdb+ as a compute or storage engine, calling it via IPC or embedding it via FFI. The kdb+ component is not independently managed; it’s part of the service.</p>
+<p>Most real systems are a hybrid. Know which pattern you’re using for each integration point.</p>
+<h2 id="the-community"><a class="header" href="#the-community">The Community</a></h2>
+<p>Q’s community is small but substantive:</p>
+<ul>
+<li><strong>KX Community</strong> (<a href="https://community.kx.com">community.kx.com</a>): Official forum. KX engineers answer questions. Good signal-to-noise ratio.</li>
+<li><strong>kdb+/q Insights</strong> (<a href="https://kdb.ai">kdb.ai</a>): KX’s developer portal, tutorials, and documentation.</li>
+<li><strong>GitHub</strong>: Search <code>kdb</code> or <code>kdbplus</code> — there’s more community tooling than the sparse ecosystem reputation suggests.</li>
+<li><strong>Stack Overflow</strong>: <code>[kdb]</code> and <code>[q-lang]</code> tags. Smaller than Python/JS but answers exist for most common questions.</li>
+</ul>
+<h2 id="a-note-on-kx-licensing"><a class="header" href="#a-note-on-kx-licensing">A Note on KX Licensing</a></h2>
+<p>The free 64-bit on-demand license from KX covers everything in this book. The license requires internet connectivity for validation. For air-gapped or cloud deployments, you need a commercial license.</p>
+<p>The business reality: if kdb+ is generating value in your organization, you likely already have a commercial relationship with KX. If you’re evaluating or building with the free license, be aware of the validation requirement before you plan a production deployment.</p>
+<h2 id="one-more-thing"><a class="header" href="#one-more-thing">One More Thing</a></h2>
+<p>Q developers who complain that the language is too opaque, the tooling is immature, and the community is too small are usually right on all three counts. They are often also the people who have been quietly building the most performant time-series systems in their organizations for a decade.</p>
+<p>The gap between Q’s ergonomics and Q’s performance is real and it’s shrinking. The IDE support is better than it was. The integration libraries are better than they were. The free license tier exists now. None of that was true five years ago.</p>
+<p>What makes Q worth the friction is what has always made it worth the friction: when you need to query a billion-row time-series table and get a result in milliseconds, there are very few alternatives that aren’t either considerably more expensive, considerably more complex to operate, or both. That’s a narrow but deep niche, and it’s not going away.</p>
+<p>The rest of the stack — Python, Rust, R, REST, Kafka, WebSockets — is better at what it’s good at. The goal of this book was to make Q a first-class participant in that stack rather than a silo. Whether you got there depends on what you built.</p>
+<p>Go build something.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
